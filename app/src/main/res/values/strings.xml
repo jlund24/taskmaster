@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">TaskManager2</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="title_hint">Task Title</string>
+    <string name="add_due_date">+ Due Date</string>
+    <string name="add_due_time">+ Due Time</string>
+    <string name="add_duration">+ Duration</string>
+    <string name="add_priority">+ Priority</string>
+
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="friday">Friday</string>
+    <string name="one_week">1 Week</string>
+
+    <string name="due_date">Due Date</string>
+    <string name="due_time">Due Time</string>
+    <string name="duration">Duration</string>
+    <string name="priority">Priority</string>
+
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="sort_filter">Sort/Filter</string>
+
+    <string name="list">List</string>
+    <string name="plan">Plan</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_navigation_drawer">NavigationDrawer</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>

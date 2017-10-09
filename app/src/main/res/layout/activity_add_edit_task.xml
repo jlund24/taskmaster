@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context="com.student.john.taskmanager2.Add_EditTaskActivity">
+
+    <EditText
+        android:id="@+id/taskTitleEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/title_hint"
+        app:backgroundTint="@color/colorAccent"
+        android:inputType="text"/>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:rowCount="2"
+        android:columnCount="2">
+
+        <Button
+            android:id="@+id/dueDateButton"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="@string/add_due_date"
+            />
+
+        <Button
+        android:id="@+id/dueTimeButton"
+        android:text="@string/add_due_time"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        />
+
+        <Button
+            android:id="@+id/durationButton"
+            android:text="@string/add_duration"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            />
+
+        <Button
+            android:id="@+id/priorityButton"
+            android:text="@string/add_priority"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            />
+
+        </GridLayout>
+
+    <Button
+        android:id="@+id/taskSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/colorAccent"
+        android:text="@string/save"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>
