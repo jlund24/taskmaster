@@ -87,7 +87,7 @@ public class DueDatePickerFragment extends DialogFragment {
             }
         });
         presenter.getDueDateButtonText(this);
-        //commit test
+
         datePicker = v.findViewById(R.id.dueDate_datePicker);
         datePicker.setOnClickListener(new View.OnClickListener() {
             @Override
