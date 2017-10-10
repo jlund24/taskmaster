@@ -5,7 +5,9 @@ import android.support.v4.app.FragmentManager;
 
 import com.student.john.taskmanager2.ClientModel;
 import com.student.john.taskmanager2.DateConverter;
+import com.student.john.taskmanager2.DurationConverter;
 import com.student.john.taskmanager2.TimeConverter;
+import com.student.john.taskmanager2.models.CustomTimePeriod;
 import com.student.john.taskmanager2.models.Task;
 
 import org.joda.time.LocalDateTime;
@@ -16,6 +18,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MIDNIGHT;
 import static com.student.john.taskmanager2.models.Task.TaskParamTitle.DUE_DATE_TIME;
 
 
@@ -26,13 +29,16 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
     private Task task = new Task();
     private String dueDateString = null;
     private String dueTimeString = null;
+    private String durationString = null;
     private ClientModel model = ClientModel.getInstance();
     private DateConverter dateConverter = new DateConverter();
     private TimeConverter timeConverter = new TimeConverter();
+    private DurationConverter durationConverter = new DurationConverter();
 
 
     public final String DUE_DATE_PICKER_DIALOG = "DueDatePickerDialog";
     public final String DUE_TIME_PICKER_DIALOG = "DueTimePickerDialog";
+    public final String DURATION_PICKER_DIALOG = "DurationPickerDialog";
 
     public Add_EditTaskPresenter(Add_EditTaskActivity activity)
     {
@@ -41,6 +47,18 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
 
     public void setActivity(Add_EditTaskActivity activity) {
         this.activity = activity;
+    }
+
+    @Override
+    public void onSave() {
+        //make sure there's a title
+        if (!activity.getTaskTitle().equals(""))
+        {
+            task.setTitle(activity.getTaskTitle());
+            task.generateTaskID();
+            model.addTask(task);
+            activity.closeActivity();
+        }
     }
 
     @Override
@@ -61,7 +79,17 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         FragmentManager manager = activity.getSupportFragmentManager();
         DueTimePickerFragment dialog = DueTimePickerFragment
                 .newInstance();
-        dialog.show(manager, DUE_DATE_PICKER_DIALOG);
+        dialog.show(manager, DUE_TIME_PICKER_DIALOG);
+
+        dialog.setPresenter(this);
+    }
+
+    @Override
+    public void onDurationClicked() {
+        //start up durationPickerFragment
+        FragmentManager manager = activity.getSupportFragmentManager();
+        DurationPickerFragment dialog = DurationPickerFragment.newInstance();
+        dialog.show(manager, DURATION_PICKER_DIALOG);
 
         dialog.setPresenter(this);
     }
@@ -71,6 +99,8 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         dueDateString = model.getContentFromButton(ClientModel.ButtonEnum.DD_TOP_LEFT);
         activity.setDueDateSelectedWith(dueDateString);
         task.setDueDateTime(dateConverter.getDateFromWord(dueDateString));
+        dueTimeString = MIDNIGHT;
+        activity.setDueTimeSelectedWith(dueTimeString);
     }
 
     @Override
@@ -78,6 +108,8 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         dueDateString = model.getContentFromButton(ClientModel.ButtonEnum.DD_TOP_RIGHT);
         activity.setDueDateSelectedWith(dueDateString);
         task.setDueDateTime(dateConverter.getDateFromWord(dueDateString));
+        dueTimeString = MIDNIGHT;
+        activity.setDueTimeSelectedWith(dueTimeString);
     }
 
     @Override
@@ -85,6 +117,8 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         dueDateString = model.getContentFromButton(ClientModel.ButtonEnum.DD_BOTTOM_LEFT);
         activity.setDueDateSelectedWith(dueDateString);
         task.setDueDateTime(dateConverter.getDateFromWord(dueDateString));
+        dueTimeString = MIDNIGHT;
+        activity.setDueTimeSelectedWith(dueTimeString);
     }
 
     @Override
@@ -92,6 +126,8 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         dueDateString = model.getContentFromButton(ClientModel.ButtonEnum.DD_BOTTOM_RIGHT);
         activity.setDueDateSelectedWith(dueDateString);
         task.setDueDateTime(dateConverter.getDateFromWord(dueDateString));
+        dueTimeString = MIDNIGHT;
+        activity.setDueTimeSelectedWith(dueTimeString);
     }
 
     @Override
@@ -110,7 +146,7 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         else if ( task.getDueDateTime() != null)
         {
             dialog.setDatePickerDate(task.getDueDateTime().getYear(),
-                    task.getDueDateTime().getMonthOfYear(), task.getDueDateTime().getDayOfMonth());
+                    task.getDueDateTime().getMonthOfYear() - 1, task.getDueDateTime().getDayOfMonth());
         }
 
     }
@@ -125,12 +161,13 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
 
     @Override
     public void onPickerDueDateClicked(int year, int month, int day) {
-        LocalDateTime dueDate = new LocalDateTime(year, month, day, 11, 59);
+        LocalDateTime dueDate = new LocalDateTime(year, month + 1, day, 11, 59);
         task.setDueDateTime( dueDate );
         DateTimeFormatter fmt = DateTimeFormat.forPattern("MMM d");
         dueDateString = null;
         activity.setDueDateSelectedWith(dueDate.toString(fmt));
-
+        dueTimeString = MIDNIGHT;
+        activity.setDueTimeSelectedWith(dueTimeString);
     }
 
     @Override
@@ -156,15 +193,39 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         setDueTimeSelectedElement(dialog);
     }
 
+    @Override
+    public void onDurationButtonOptionClicked(ClientModel.ButtonEnum button) {
+        durationString = model.getContentFromButton(button);
+        activity.setDurationSelectedWith(durationString);
+        task.setDuration(durationConverter.getDurationFromWord(durationString));
+    }
+
+    @Override
+    public void getDurationPickerConfiguration(DurationPickerFragment dialog) {
+        setDurationButtonText(dialog);
+        setDurationSelectedElement(dialog);
+    }
+
+    private void setDurationButtonText(DurationPickerFragment dialog)
+    {
+        dialog.setButtonText(ClientModel.ButtonEnum.DUR_TOP_LEFT, model.getContentFromButton(ClientModel.ButtonEnum.DUR_TOP_LEFT));
+        dialog.setButtonText(ClientModel.ButtonEnum.DUR_TOP_RIGHT, model.getContentFromButton(ClientModel.ButtonEnum.DUR_TOP_RIGHT));
+        dialog.setButtonText(ClientModel.ButtonEnum.DUR_BOTTOM_LEFT, model.getContentFromButton(ClientModel.ButtonEnum.DUR_BOTTOM_LEFT));
+        dialog.setButtonText(ClientModel.ButtonEnum.DUR_BOTTOM_RIGHT, model.getContentFromButton(ClientModel.ButtonEnum.DUR_BOTTOM_RIGHT));
+    }
+
+    private void setDurationSelectedElement(DurationPickerFragment dialog)
+    {
+        if (durationString != null && model.getButtonFromContent(durationString) != null)
+        {
+            dialog.setSelectedButton(model.getButtonFromContent(durationString));
+        }
+    }
+
     private void setDueTimeSelectedElement(DueTimePickerFragment dialog) {
         if (dueTimeString != null && model.getButtonFromContent(dueTimeString) != null)
         {
             dialog.setSelectedButton(model.getButtonFromContent(dueTimeString));
-        }
-        else if ( task.getDueDateTime() != null)
-        {
-            dialog.setTimePickerTime(task.getDueDateTime().getHourOfDay(),
-                    task.getDueDateTime().getMinuteOfHour());
         }
 
     }

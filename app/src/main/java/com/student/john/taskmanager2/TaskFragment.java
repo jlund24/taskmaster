@@ -12,10 +12,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.student.john.taskmanager2.dummy.DummyContent;
 import com.student.john.taskmanager2.dummy.DummyContent.DummyItem;
 import com.student.john.taskmanager2.models.Task;
+import com.student.john.taskmanager2.models.TaskList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ public class TaskFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private TaskRecyclerViewAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -66,23 +69,46 @@ public class TaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-        List<Task> tasks = new ArrayList<>();
-        tasks.add(new Task("hey there", new HashMap<String, Object>()));
-        tasks.add(new Task("task 2", new HashMap<String, Object>()));
+//        List<Task> tasks = new ArrayList<>();
+//        tasks.add(new Task("hey there", new HashMap<String, Object>()));
+//        tasks.add(new Task("task 2", new HashMap<String, Object>()));
+        TaskList tasks = ClientModel.getInstance().getAllTasks();
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new TaskRecyclerViewAdapter(tasks, mListener));
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            adapter = new TaskRecyclerViewAdapter(tasks.getTaskList(), mListener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
 
+    private void updateUI()
+    {
+        //get tasks
+        TaskList taskList = ClientModel.getInstance().getAllTasks();
+        List<Task> tasks = taskList.getTaskList();
+
+        //use adapter to update
+        if (adapter == null)
+        {
+
+        }
+        else
+        {
+            adapter.setValues(tasks);
+            adapter.notifyDataSetChanged();
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        updateUI();
+        super.onResume();
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

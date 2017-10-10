@@ -20,16 +20,14 @@
             android:layout_width="125dp"
             android:layout_height="55dp"
             android:layout_gravity="center_vertical"
-            android:textOff="@string/today"
-            android:textOn="@string/today"
+
             />
 
         <ToggleButton
             android:id="@+id/topRightDueDateButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
-            android:textOff="@string/tomorrow"
-            android:textOn="@string/tomorrow"
+
             />
 
         <ToggleButton
@@ -37,15 +35,13 @@
             android:layout_width="125dp"
             android:layout_height="55dp"
             android:elevation="0dp"
-            android:textOff="@string/friday"
-            android:textOn="@string/friday"/>
+            />
 
         <ToggleButton
             android:id="@+id/bottomRightDueDateButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
-            android:textOff="@string/one_week"
-            android:textOn="@string/one_week"
+
             />
 
 

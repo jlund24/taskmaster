@@ -198,4 +198,12 @@ public class Task implements ITask, Comparable {
     public void setTaskID(String taskID) {
         this.taskID = taskID;
     }
+
+    public void generateTaskID()
+    {
+        if (this.taskID == null)
+        {
+            this.taskID = UUID.randomUUID().toString();
+        }
+    }
 }

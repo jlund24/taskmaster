@@ -44,11 +44,11 @@ public class DueDatePickerFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View v = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_due_date_picker, null);
-        initializeViews(v);
+
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         dialogBuilder.setView(v);
-
+        initializeViews(v);
         dialogBuilder.setTitle(R.string.due_date);
         Dialog dialog = dialogBuilder.create();
         dialog.setCanceledOnTouchOutside(true);
@@ -121,24 +121,28 @@ public class DueDatePickerFragment extends DialogFragment {
     {
         topLeftDueDateButton.setTextOff(text);
         topLeftDueDateButton.setTextOn(text);
+        topLeftDueDateButton.setText(text);
     }
 
     public void setTopRightDueDateButtonText(String text)
     {
-        topLeftDueDateButton.setTextOff(text);
-        topLeftDueDateButton.setTextOn(text);
+        topRightDueDateButton.setTextOff(text);
+        topRightDueDateButton.setTextOn(text);
+        topRightDueDateButton.setText(text);
     }
 
     public void setBottomLeftDueDateButtonText(String text)
     {
-        topLeftDueDateButton.setTextOff(text);
-        topLeftDueDateButton.setTextOn(text);
+        bottomLeftDueDateButton.setTextOff(text);
+        bottomLeftDueDateButton.setTextOn(text);
+        bottomLeftDueDateButton.setText(text);
     }
 
     public void setBottomRightDueDateButtonText(String text)
     {
-        topLeftDueDateButton.setTextOff(text);
-        topLeftDueDateButton.setTextOn(text);
+        bottomRightDueDateButton.setTextOff(text);
+        bottomRightDueDateButton.setTextOn(text);
+        bottomRightDueDateButton.setText(text);
     }
 
     private void setButtonText(ToggleButton button, String text)

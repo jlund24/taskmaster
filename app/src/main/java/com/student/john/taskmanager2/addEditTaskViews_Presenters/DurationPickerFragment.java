@@ -4,42 +4,41 @@ package com.student.john.taskmanager2.addEditTaskViews_Presenters;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-
-
-import android.widget.TimePicker;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.student.john.taskmanager2.ClientModel;
 import com.student.john.taskmanager2.R;
 
-
-
 import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_BOTTOM_LEFT;
 import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_BOTTOM_RIGHT;
 import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_TOP_LEFT;
 import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_TOP_RIGHT;
+import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DUR_BOTTOM_LEFT;
+import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DUR_BOTTOM_RIGHT;
+import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DUR_TOP_LEFT;
+import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DUR_TOP_RIGHT;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DueTimePickerFragment extends DialogFragment {
+public class DurationPickerFragment extends DialogFragment {
 
 
-    private ToggleButton topLeftDueTimeButton;
-    private ToggleButton topRightDueTimeButton;
-    private ToggleButton bottomLeftDueTimeButton;
-    private ToggleButton bottomRightDueTimeButton;
-    //private TimePicker timePicker;
+    private ToggleButton topLeftDurationButton;
+    private ToggleButton topRightDurationButton;
+    private ToggleButton bottomLeftDurationButton;
+    private ToggleButton bottomRightDurationButton;
 
     private IAdd_EditTaskPresenter presenter;
 
-    public DueTimePickerFragment() {
+    public DurationPickerFragment() {
         // Required empty public constructor
     }
 
@@ -48,13 +47,13 @@ public class DueTimePickerFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View v = LayoutInflater.from(getActivity())
-                .inflate(R.layout.fragment_due_time_picker, null);
+                .inflate(R.layout.fragment_duration_picker, null);
         initializeViews(v);
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         dialogBuilder.setView(v);
 
-        dialogBuilder.setTitle(R.string.due_time);
+        dialogBuilder.setTitle(R.string.duration);
         Dialog dialog = dialogBuilder.create();
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
@@ -62,63 +61,45 @@ public class DueTimePickerFragment extends DialogFragment {
 
     private void initializeViews(View v)
     {
-        topLeftDueTimeButton = v.findViewById(R.id.topLeftDueTimeButton);
-        topLeftDueTimeButton.setOnClickListener(new View.OnClickListener() {
+        topLeftDurationButton = v.findViewById(R.id.topLeftDurationButton);
+        topLeftDurationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onDueTimeButtonOptionClicked(DT_TOP_LEFT);
+                presenter.onDurationButtonOptionClicked(DUR_TOP_LEFT);
                 dismiss();
             }
         });
 
-        topRightDueTimeButton = v.findViewById(R.id.topRightDueTimeButton);
-        topRightDueTimeButton.setOnClickListener(new View.OnClickListener() {
+        topRightDurationButton = v.findViewById(R.id.topRightDurationButton);
+        topRightDurationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onDueTimeButtonOptionClicked(DT_TOP_RIGHT);
+                presenter.onDurationButtonOptionClicked(DUR_TOP_RIGHT);
                 dismiss();
             }
         });
 
-        bottomLeftDueTimeButton = v.findViewById(R.id.bottomLeftDueTimeButton);
-        bottomLeftDueTimeButton.setOnClickListener(new View.OnClickListener() {
+        bottomLeftDurationButton = v.findViewById(R.id.bottomLeftDurationButton);
+        bottomLeftDurationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onDueTimeButtonOptionClicked(DT_BOTTOM_LEFT);
+                presenter.onDurationButtonOptionClicked(DUR_BOTTOM_LEFT);
                 dismiss();
             }
         });
 
-        bottomRightDueTimeButton = v.findViewById(R.id.bottomRightDueTimeButton);
-        bottomRightDueTimeButton.setOnClickListener(new View.OnClickListener() {
+        bottomRightDurationButton = v.findViewById(R.id.bottomRightDurationButton);
+        bottomRightDurationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onDueTimeButtonOptionClicked(DT_BOTTOM_RIGHT);
+                presenter.onDurationButtonOptionClicked(DUR_BOTTOM_RIGHT);
                 dismiss();
             }
         });
 
-//        timePicker = v.findViewById(R.id.dueTime_timePicker);
-//        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-//            @Override
-//            public void onTimeChanged(TimePicker timePicker, int hour, int minute) {
-//                presenter.onPickerDueTimeClicked(hour, minute);
-//                dismiss();
-//            }
-//        });
 
-        presenter.getDueTimePickerConfiguration(this);
+        presenter.getDurationPickerConfiguration(this);
 
-    }
-
-    public static DueTimePickerFragment newInstance ()
-    {
-        DueTimePickerFragment fragment = new DueTimePickerFragment();
-        return fragment;
-    }
-
-    public void setPresenter(IAdd_EditTaskPresenter presenter) {
-        this.presenter = presenter;
     }
 
     private void setButtonText(ToggleButton button, String text)
@@ -132,17 +113,17 @@ public class DueTimePickerFragment extends DialogFragment {
     {
         switch (button)
         {
-            case DT_TOP_LEFT:
-                setButtonText(topLeftDueTimeButton, text);
+            case DUR_TOP_LEFT:
+                setButtonText(topLeftDurationButton, text);
                 break;
-            case DT_TOP_RIGHT:
-                setButtonText(topRightDueTimeButton, text);
+            case DUR_TOP_RIGHT:
+                setButtonText(topRightDurationButton, text);
                 break;
-            case DT_BOTTOM_LEFT:
-                setButtonText(bottomLeftDueTimeButton, text);
+            case DUR_BOTTOM_LEFT:
+                setButtonText(bottomLeftDurationButton, text);
                 break;
-            case DT_BOTTOM_RIGHT:
-                setButtonText(bottomRightDueTimeButton, text);
+            case DUR_BOTTOM_RIGHT:
+                setButtonText(bottomRightDurationButton, text);
                 break;
             default:
                 Toast toast = Toast.makeText(getActivity(), "Unknown button specified", Toast.LENGTH_SHORT);
@@ -156,17 +137,17 @@ public class DueTimePickerFragment extends DialogFragment {
     {
         switch (button)
         {
-            case DT_TOP_LEFT:
-                setChecked(topLeftDueTimeButton, true);
+            case DUR_TOP_LEFT:
+                setChecked(topLeftDurationButton, true);
                 break;
-            case DT_TOP_RIGHT:
-                setChecked(topRightDueTimeButton, true);
+            case DUR_TOP_RIGHT:
+                setChecked(topRightDurationButton, true);
                 break;
-            case DT_BOTTOM_LEFT:
-                setChecked(bottomLeftDueTimeButton, true);
+            case DUR_BOTTOM_LEFT:
+                setChecked(bottomLeftDurationButton, true);
                 break;
-            case DT_BOTTOM_RIGHT:
-                setChecked(bottomRightDueTimeButton, true);
+            case DUR_BOTTOM_RIGHT:
+                setChecked(bottomRightDurationButton, true);
                 break;
             default:
                 Toast toast = Toast.makeText(getActivity(), "Unknown button specified", Toast.LENGTH_SHORT);
@@ -180,9 +161,15 @@ public class DueTimePickerFragment extends DialogFragment {
         button.setChecked(checked);
     }
 
-    public void setTimePickerTime(int hour, int minute)
+    public static DurationPickerFragment newInstance ()
     {
-
-
+        DurationPickerFragment fragment = new DurationPickerFragment();
+        return fragment;
     }
+
+    public void setPresenter(IAdd_EditTaskPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+
 }

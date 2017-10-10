@@ -6,9 +6,10 @@ import com.student.john.taskmanager2.ClientModel;
 interface IAdd_EditTaskPresenter {
 
     //Add_EditActivity callbacks
-    //void onSave();
+    void onSave();
     void onDueDateClicked();
     void onDueTimeClicked();
+    void onDurationClicked();
 
     //DueDatePickerFragment callbacks
     void onTopLeftDueDateOptionClicked();
@@ -22,4 +23,8 @@ interface IAdd_EditTaskPresenter {
     void onDueTimeButtonOptionClicked(ClientModel.ButtonEnum button);
     void onPickerDueTimeClicked(int hour, int minute);
     void getDueTimePickerConfiguration(DueTimePickerFragment dialog);
+
+    //DurationPickerFragment callbacks
+    void onDurationButtonOptionClicked(ClientModel.ButtonEnum button);
+    void getDurationPickerConfiguration(DurationPickerFragment dialog);
 }

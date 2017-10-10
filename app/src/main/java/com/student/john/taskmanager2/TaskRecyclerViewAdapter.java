@@ -19,12 +19,17 @@ import java.util.List;
  */
 public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Task> mValues;
+    private List<Task> mValues;
     private final OnListFragmentInteractionListener mListener;
 
     public TaskRecyclerViewAdapter(List<Task> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
+    }
+
+    public void setValues(List<Task> tasks)
+    {
+        mValues = tasks;
     }
 
     @Override
@@ -37,8 +42,8 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getTitle());
-        //holder.mContentView.setText(mValues.get(position).getTaskID());
+        holder.mTitleView.setText(mValues.get(position).getTitle());
+        holder.mDueDateView.setText(mValues.get(position).getTaskID());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,20 +64,20 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mTitleView;
+        public final TextView mDueDateView;
         public Task mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.task_list_item_title);
-            mContentView = (TextView) view.findViewById(R.id.task_list_item_dueDate);
+            mTitleView =  view.findViewById(R.id.task_list_item_title);
+            mDueDateView =  view.findViewById(R.id.task_list_item_dueDate);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mDueDateView.getText() + "'";
         }
     }
 }

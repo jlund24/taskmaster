@@ -11,6 +11,10 @@ import static com.student.john.taskmanager2.DateConverter.DateStringValues.A_WEE
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.FRIDAY;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TODAY;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TOMORROW;
+import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_1;
+import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_1_5;
+import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_3;
+import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.MIN_30;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.AFTERNOON;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.EVENING;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MIDNIGHT;
@@ -56,6 +60,11 @@ public class ClientModel {
         buttonToContentMap.put(ButtonEnum.DT_TOP_RIGHT, AFTERNOON);
         buttonToContentMap.put(ButtonEnum.DT_BOTTOM_LEFT, EVENING);
         buttonToContentMap.put(ButtonEnum.DT_BOTTOM_RIGHT, MIDNIGHT);
+        buttonToContentMap.put(ButtonEnum.DUR_TOP_LEFT, MIN_30);
+        buttonToContentMap.put(ButtonEnum.DUR_TOP_RIGHT, HR_1);
+        buttonToContentMap.put(ButtonEnum.DUR_BOTTOM_LEFT, HR_1_5);
+        buttonToContentMap.put(ButtonEnum.DUR_BOTTOM_RIGHT, HR_3);
+
 
         contentToButtonMap.put(TODAY, ButtonEnum.DD_TOP_LEFT);
         contentToButtonMap.put(TOMORROW, ButtonEnum.DD_TOP_RIGHT);
@@ -65,6 +74,11 @@ public class ClientModel {
         contentToButtonMap.put(AFTERNOON, ButtonEnum.DT_TOP_RIGHT);
         contentToButtonMap.put(EVENING, ButtonEnum.DT_BOTTOM_LEFT);
         contentToButtonMap.put(MIDNIGHT, ButtonEnum.DT_BOTTOM_RIGHT);
+        contentToButtonMap.put(MIN_30, ButtonEnum.DUR_TOP_LEFT);
+        contentToButtonMap.put(HR_1, ButtonEnum.DUR_TOP_RIGHT);
+        contentToButtonMap.put(HR_1_5, ButtonEnum.DUR_BOTTOM_LEFT);
+        contentToButtonMap.put(HR_3, ButtonEnum.DUR_BOTTOM_RIGHT);
+
     }
 
     public String getContentFromButton(ButtonEnum button)
@@ -80,5 +94,10 @@ public class ClientModel {
     public void addTask(Task task)
     {
         allTasks.add(task);
+    }
+
+    public TaskList getAllTasks()
+    {
+        return this.allTasks;
     }
 }

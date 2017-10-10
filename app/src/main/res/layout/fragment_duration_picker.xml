@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:orientation="vertical"
               android:gravity="center"
-              tools:context="com.student.john.taskmanager2.addEditTaskViews_Presenters.DueTimePickerFragment">
+              tools:context="com.student.john.taskmanager2.addEditTaskViews_Presenters.DurationPickerFragment">
 
     <GridLayout
         android:layout_width="wrap_content"
@@ -16,49 +16,42 @@
         android:paddingTop="20dp">
 
         <ToggleButton
-            android:id="@+id/topLeftDueTimeButton"
+            android:id="@+id/topLeftDurationButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
             android:layout_gravity="center_vertical"
-            android:textOff="@string/today"
-            android:textOn="@string/today"
             />
 
         <ToggleButton
-            android:id="@+id/topRightDueTimeButton"
+            android:id="@+id/topRightDurationButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
-            android:textOff="@string/tomorrow"
-            android:textOn="@string/tomorrow"
             />
 
         <ToggleButton
-            android:id="@+id/bottomLeftDueTimeButton"
+            android:id="@+id/bottomLeftDurationButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
-            android:elevation="0dp"
-            android:textOff="@string/friday"
-            android:textOn="@string/friday"/>
+            />
 
         <ToggleButton
-            android:id="@+id/bottomRightDueTimeButton"
+            android:id="@+id/bottomRightDurationButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
-            android:textOff="@string/one_week"
-            android:textOn="@string/one_week"
+
             />
 
 
     </GridLayout>
 
     <!--<TimePicker-->
-        <!--android:id="@+id/dueTime_timePicker"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:scaleX="0.9"-->
-        <!--android:scaleY="0.9"-->
-        <!--android:headerBackground="@android:color/darker_gray"-->
-        <!--&gt;-->
+    <!--android:id="@+id/dueTime_timePicker"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:scaleX="0.9"-->
+    <!--android:scaleY="0.9"-->
+    <!--android:headerBackground="@android:color/darker_gray"-->
+    <!--&gt;-->
 
     <!--</TimePicker>-->
 
