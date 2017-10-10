@@ -1,20 +1,21 @@
-package com.student.john.taskmanager2;
+package com.student.john.taskmanager2.addEditTaskViews_Presenters;
 
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 
+import com.student.john.taskmanager2.R;
 import com.student.john.taskmanager2.models.Task;
 
 import java.util.Map;
 
-public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_EditTaskActivity{
+public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_EditTaskActivity {
 
 
     private Button dueDateButton;
+    private Button dueTimeButton;
     private IAdd_EditTaskPresenter presenter;
 
 
@@ -28,6 +29,13 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
             @Override
             public void onClick(View view) {
                 presenter.onDueDateClicked();
+            }
+        });
+        dueTimeButton = (Button) findViewById(R.id.dueTimeButton);
+        dueTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onDueTimeClicked();
             }
         });
     }
@@ -51,5 +59,10 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
     public void setDueDateSelectedWith(String text)
     {
         dueDateButton.setText(text);
+    }
+
+    public void setDueTimeSelectedWith(String text)
+    {
+        dueTimeButton.setText(text);
     }
 }

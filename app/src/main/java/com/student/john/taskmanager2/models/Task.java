@@ -23,12 +23,12 @@ public class Task implements ITask, Comparable {
 
     private String title;
     //private String user;
-    private Integer priority;
-    private LocalDateTime dueDateTime;
-    private ICustomTimePeriod duration;
-    private ICustomTimePeriod divisibleUnit;
+    private Integer priority = null;
+    private LocalDateTime dueDateTime = null;
+    private ICustomTimePeriod duration = new CustomTimePeriod(new Duration(0));
+    private ICustomTimePeriod divisibleUnit = new CustomTimePeriod(new Duration(0));
     private Boolean completed = false;
-    private String taskID;
+    private String taskID = null;
 
     public static final class TaskParamTitle {
         public static final String TASKID = "TaskID";
@@ -169,5 +169,33 @@ public class Task implements ITask, Comparable {
     public void reduceDurationOneUnit()
     {
         this.duration.minus(this.divisibleUnit);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public void setDueDateTime(LocalDateTime dueDateTime) {
+        this.dueDateTime = dueDateTime;
+    }
+
+    public void setDuration(ICustomTimePeriod duration) {
+        this.duration = duration;
+    }
+
+    public void setDivisibleUnit(ICustomTimePeriod divisibleUnit) {
+        this.divisibleUnit = divisibleUnit;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+
+    public void setTaskID(String taskID) {
+        this.taskID = taskID;
     }
 }

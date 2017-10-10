@@ -11,9 +11,13 @@ import static com.student.john.taskmanager2.DateConverter.DateStringValues.A_WEE
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.FRIDAY;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TODAY;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TOMORROW;
+import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.AFTERNOON;
+import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.EVENING;
+import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MIDNIGHT;
+import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MORNING;
 
 
-class ClientModel {
+public class ClientModel {
 
     public enum ButtonEnum {
         DD_TOP_LEFT, DD_TOP_RIGHT, DD_BOTTOM_LEFT, DD_BOTTOM_RIGHT,
@@ -27,11 +31,12 @@ class ClientModel {
     private TaskList currentlyShownTasks = new TaskList();
 
     private Map<ButtonEnum, String> buttonToContentMap = new HashMap<>();
+    private Map<String, ButtonEnum> contentToButtonMap = new HashMap<>();
 
 
     //SINGLETON FUNCTIONS------------------------
 
-    static ClientModel getInstance() {
+    public static ClientModel getInstance() {
         return ourInstance;
     }
 
@@ -47,11 +52,29 @@ class ClientModel {
         buttonToContentMap.put(ButtonEnum.DD_TOP_RIGHT, TOMORROW);
         buttonToContentMap.put(ButtonEnum.DD_BOTTOM_LEFT, FRIDAY);
         buttonToContentMap.put(ButtonEnum.DD_BOTTOM_RIGHT, A_WEEK);
+        buttonToContentMap.put(ButtonEnum.DT_TOP_LEFT, MORNING);
+        buttonToContentMap.put(ButtonEnum.DT_TOP_RIGHT, AFTERNOON);
+        buttonToContentMap.put(ButtonEnum.DT_BOTTOM_LEFT, EVENING);
+        buttonToContentMap.put(ButtonEnum.DT_BOTTOM_RIGHT, MIDNIGHT);
+
+        contentToButtonMap.put(TODAY, ButtonEnum.DD_TOP_LEFT);
+        contentToButtonMap.put(TOMORROW, ButtonEnum.DD_TOP_RIGHT);
+        contentToButtonMap.put(FRIDAY, ButtonEnum.DD_BOTTOM_LEFT);
+        contentToButtonMap.put(A_WEEK, ButtonEnum.DD_BOTTOM_RIGHT);
+        contentToButtonMap.put(MORNING, ButtonEnum.DT_TOP_LEFT);
+        contentToButtonMap.put(AFTERNOON, ButtonEnum.DT_TOP_RIGHT);
+        contentToButtonMap.put(EVENING, ButtonEnum.DT_BOTTOM_LEFT);
+        contentToButtonMap.put(MIDNIGHT, ButtonEnum.DT_BOTTOM_RIGHT);
     }
 
     public String getContentFromButton(ButtonEnum button)
     {
         return buttonToContentMap.get(button);
+    }
+
+    public ButtonEnum getButtonFromContent(String content)
+    {
+        return contentToButtonMap.get(content);
     }
 
     public void addTask(Task task)

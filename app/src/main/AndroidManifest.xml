@@ -18,7 +18,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".Add_EditTaskActivity">
+        <activity android:name=".addEditTaskViews_Presenters.Add_EditTaskActivity">
 
              <intent-filter>
              <action android:name="android.intent.action.MAIN"/>

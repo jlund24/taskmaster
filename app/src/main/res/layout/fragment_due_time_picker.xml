@@ -1,10 +1,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="vertical"
               android:gravity="center"
-             tools:context="com.student.john.taskmanager2.addEditTaskViews_Presenters.DueDatePickerFragment">
+              tools:context="com.student.john.taskmanager2.addEditTaskViews_Presenters.DueDatePickerFragment">
 
     <GridLayout
         android:layout_width="wrap_content"
@@ -16,7 +16,7 @@
         android:paddingTop="20dp">
 
         <ToggleButton
-            android:id="@+id/topLeftDueDateButton"
+            android:id="@+id/topLeftDueTimeButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
             android:layout_gravity="center_vertical"
@@ -25,7 +25,7 @@
             />
 
         <ToggleButton
-            android:id="@+id/topRightDueDateButton"
+            android:id="@+id/topRightDueTimeButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
             android:textOff="@string/tomorrow"
@@ -33,7 +33,7 @@
             />
 
         <ToggleButton
-            android:id="@+id/bottomLeftDueDateButton"
+            android:id="@+id/bottomLeftDueTimeButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
             android:elevation="0dp"
@@ -41,7 +41,7 @@
             android:textOn="@string/friday"/>
 
         <ToggleButton
-            android:id="@+id/bottomRightDueDateButton"
+            android:id="@+id/bottomRightDueTimeButton"
             android:layout_width="125dp"
             android:layout_height="55dp"
             android:textOff="@string/one_week"
@@ -51,17 +51,16 @@
 
     </GridLayout>
 
-    <DatePicker
-        android:id="@+id/dueDate_datePicker"
+    <TimePicker
+        android:id="@+id/dueTime_timePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-100dp"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
+        android:headerBackground="@android:color/darker_gray"
+        >
 
-        android:headerBackground="@android:color/transparent"
-        android:paddingTop="-100dp"
-        android:translationZ="-1dp">
-
-    </DatePicker>
+    </TimePicker>
 
 
 </LinearLayout>

@@ -7,19 +7,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    tools:context="com.student.john.taskmanager2.Add_EditTaskActivity">
+    tools:context="com.student.john.taskmanager2.addEditTaskViews_Presenters.Add_EditTaskActivity">
 
     <EditText
+        android:layout_weight="0.1"
         android:id="@+id/taskTitleEditText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:hint="@string/title_hint"
         app:backgroundTint="@color/colorAccent"
         android:inputType="text"/>
 
     <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.6"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:rowCount="2"
         android:columnCount="2">
 
@@ -53,12 +56,25 @@
 
         </GridLayout>
 
+    <Space
+        android:layout_weight="0.1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <Button
+        android:layout_weight="0.1"
+        android:layout_marginBottom="10dp"
+        android:gravity="center"
         android:id="@+id/taskSaveButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:backgroundTint="@color/colorAccent"
         android:text="@string/save"
         android:textColor="@android:color/white"/>
+
+    <Space
+        android:layout_weight="0.1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>
