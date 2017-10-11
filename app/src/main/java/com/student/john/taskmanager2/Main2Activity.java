@@ -100,11 +100,8 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
     @Override
     public void onListFragmentInteraction(Task item) {
         Context context = getApplicationContext();
-        CharSequence text = "Hello toast!";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
+        Intent intent = Add_EditTaskActivity.newIntent(context, item.getTaskID());
+        startActivity(intent);
     }
 
     /**

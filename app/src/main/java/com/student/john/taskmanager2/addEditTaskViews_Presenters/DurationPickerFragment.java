@@ -3,6 +3,7 @@ package com.student.john.taskmanager2.addEditTaskViews_Presenters;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.NonNull;
@@ -54,6 +55,12 @@ public class DurationPickerFragment extends DialogFragment {
         dialogBuilder.setView(v);
 
         dialogBuilder.setTitle(R.string.duration);
+        dialogBuilder.setPositiveButton("Clear", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.clearDuration();
+            }
+        });
         Dialog dialog = dialogBuilder.create();
         dialog.setCanceledOnTouchOutside(true);
         return dialog;

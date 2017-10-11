@@ -1,8 +1,16 @@
 package com.student.john.taskmanager2;
 
 
-import org.joda.time.LocalDateTime;
+import com.student.john.taskmanager2.models.CustomTimePeriod;
 
+import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
+import static com.student.john.taskmanager2.DateConverter.DateStringValues.OVERDUE;
+import static com.student.john.taskmanager2.DateConverter.DateStringValues.TODAY;
+import static com.student.john.taskmanager2.DateConverter.DateStringValues.TOMORROW;
 
 
 public class DateConverter {
@@ -21,6 +29,7 @@ public class DateConverter {
         public static final String SUNDAY = "Sunday";
         public static final String A_WEEK = "1 Week";
         public static final String NEXT_2_WEEKS = "Next 2 Weeks";
+        public static final String OVERDUE = "Overdue";
 
     }
 
@@ -43,9 +52,9 @@ public class DateConverter {
     {
         switch (name)
         {
-            case DateStringValues.TODAY:
+            case TODAY:
                 return getToday(startDate);
-            case DateStringValues.TOMORROW:
+            case TOMORROW:
                 return getTomorrow(startDate);
             case DateStringValues.FRIDAY:
                 return getFriday(startDate);
@@ -60,20 +69,48 @@ public class DateConverter {
 
     }
 
+    public String getWordFromDate(LocalDateTime dateTime)
+    {
+        CustomTimePeriod diff = new CustomTimePeriod(new Period(startDate, dateTime));
+
+        if (diff.getDurationObject().getMillis() < 0)
+        {
+            return OVERDUE;
+        }
+        else if (isToday(startDate, dateTime))
+        {
+            return TODAY;
+        }
+        else if (isTomorrow(startDate, dateTime))
+        {
+            return TOMORROW;
+        }
+        else if (isWithin7Days(startDate, dateTime))
+        {
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("EEEE");
+            return dateTime.toString(fmt);
+        }
+        else
+        {
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("MMM d");
+            return dateTime.toString(fmt);
+        }
+    }
+
     private LocalDateTime getToday(LocalDateTime startDate)
     {
-        return startDate.withTime(11,59,0,0);
+        return startDate.withTime(23,59,0,0);
     }
 
     private LocalDateTime getTomorrow(LocalDateTime startDate)
     {
-        LocalDateTime today = startDate.withTime(11,59,0,0);
+        LocalDateTime today = startDate.withTime(23,59,0,0);
         return today.plusDays(1);
     }
 
     private LocalDateTime getFriday(LocalDateTime startDate)
     {
-        LocalDateTime today = startDate.withTime(11,59,0,0);
+        LocalDateTime today = startDate.withTime(23,59,0,0);
         int difference = 5 - today.getDayOfWeek();
         //fix the difference in case today is Friday, or it's the weekend (after Friday)
         if (difference == 0)
@@ -89,13 +126,40 @@ public class DateConverter {
 
     private LocalDateTime getAWeek(LocalDateTime startDate)
     {
-        LocalDateTime today = startDate.withTime(11,59,0,0);
+        LocalDateTime today = startDate.withTime(23,59,0,0);
         return today.plusDays(7);
     }
 
     private LocalDateTime getNext2Weeks(LocalDateTime startDate)
     {
-        LocalDateTime today = startDate.withTime(11,59,0,0);
+        LocalDateTime today = startDate.withTime(23,59,0,0);
         return today.plusDays(14);
     }
+
+    private boolean isToday(LocalDateTime date1, LocalDateTime date2)
+    {
+        return (date1.getDayOfMonth() == date2.getDayOfMonth() &&
+                date1.getMonthOfYear() == date2.getMonthOfYear() &&
+                date1.getYear() == date2.getYear());
+
+    }
+
+    private boolean isTomorrow(LocalDateTime date1, LocalDateTime date2)
+    {
+        date1 = date1.plusDays(1);
+        return (date1.getDayOfMonth()  == date2.getDayOfMonth() &&
+                date1.getMonthOfYear() == date2.getMonthOfYear() &&
+                date1.getYear() == date2.getYear());
+    }
+
+    private boolean isWithin7Days(LocalDateTime date1, LocalDateTime date2)
+    {
+        date1 = date1.plusDays(7).withTime(0,0,0,0);
+        date2 = date2.withTime(0,0,0,0);
+        CustomTimePeriod diff = new CustomTimePeriod(new Period(date1, date2));
+        return (diff.getDurationObject().getMillis() < 0);
+
+    }
+
+
 }

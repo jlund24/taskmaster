@@ -5,20 +5,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TaskList {
 
-    List<Task> taskList;
+    private List<Task> taskList;
+    private Map<String, Task> taskMap;
 
-    public TaskList(List<Task> taskList)
+    public TaskList(List<Task> taskList, Map<String, Task> taskMap)
     {
+
         this.taskList = taskList;
+        this.taskMap = taskMap;
     }
 
     public TaskList()
     {
-        taskList = new ArrayList<Task>();
+
+        taskList = new ArrayList<>();
+        taskMap = new HashMap<>();
     }
 
     public void sortByPoints()
@@ -68,7 +75,19 @@ public class TaskList {
 
     public void add(Task task)
     {
-        taskList.add(task);
+        if (taskMap.containsKey(task.getTaskID()))
+        {
+            //if the task was already in the list, we need to remove it before we add its edited version
+            taskList.remove( taskMap.get(task.getTaskID()) );
+            taskMap.put(task.getTaskID(), task);
+            taskList.add(task);
+        }
+        else
+        {
+            taskList.add(task);
+            taskMap.put(task.getTaskID(), task);
+        }
+
     }
 
     @Override
@@ -82,8 +101,11 @@ public class TaskList {
         return str;
     }
 
-    public void remove(Task task)
+    public void removeTask(Task task)
     {
         this.taskList.remove(task);
+        this.taskMap.remove(task.getTaskID());
     }
+
+
 }

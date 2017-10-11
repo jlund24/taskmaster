@@ -1,11 +1,7 @@
 package com.student.john.taskmanager2.models;
 
 
-import org.joda.time.Days;
-import org.joda.time.Duration;
-import org.joda.time.Hours;
 import org.joda.time.LocalDateTime;
-import org.joda.time.Minutes;
 import org.joda.time.Period;
 import org.junit.After;
 import org.junit.Before;
@@ -13,9 +9,6 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
 import static com.student.john.taskmanager2.models.Task.TaskParamTitle.DIVISIBLE_UNIT;
 import static com.student.john.taskmanager2.models.Task.TaskParamTitle.DUE_DATE_TIME;
@@ -227,7 +220,7 @@ public class TaskSortingTest {
                 {
                     forToday.add(task);
                     minutesToWork -= task.getDuration().getTotalAsMinutes();
-                    taskList.remove(task);
+                    taskList.removeTask(task);
                     break;
                 }
             }
@@ -336,7 +329,7 @@ public class TaskSortingTest {
                 {
                     forToday.add(task);
                     minutesToWork -= task.getDuration().getTotalAsMinutes();
-                    taskList.remove(task);
+                    taskList.removeTask(task);
                     break;
                 }
             }
@@ -353,11 +346,18 @@ public class TaskSortingTest {
     @Test
     public void sandbox()
     {
+//        LocalDateTime now = new LocalDateTime();
+//        LocalDateTime at4pm = new LocalDateTime(2017,9,25,16,0,0);
+//        System.out.println(Days.daysBetween(now, at4pm).getDays());
+//        System.out.println(Hours.hoursBetween(now, at4pm).getHours());
+//        System.out.println(Minutes.minutesBetween(now, at4pm).getMinutes());
+
+        Task task = new Task();
+        task.setTitle("test");
+        task.setDueDateTime(new LocalDateTime(2017,10,11,0,59));
         LocalDateTime now = new LocalDateTime();
-        LocalDateTime at4pm = new LocalDateTime(2017,9,25,16,0,0);
-        System.out.println(Days.daysBetween(now, at4pm).getDays());
-        System.out.println(Hours.hoursBetween(now, at4pm).getHours());
-        System.out.println(Minutes.minutesBetween(now, at4pm).getMinutes());
+        Period period = new Period(now.withTime(0,0,0,0), task.getDueDateTime().withTime(0,0,0,0));
+        System.out.println("Period: " + new Period(now, task.getDueDateTime()));
 
     }
 

@@ -27,6 +27,7 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
     private Add_EditTaskActivity activity;
     private Map<String, Object> taskParams = new HashMap<>();
     private Task task = new Task();
+    private Task originalTask = null;
     private String dueDateString = null;
     private String dueTimeString = null;
     private String durationString = null;
@@ -92,6 +93,29 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
         dialog.show(manager, DURATION_PICKER_DIALOG);
 
         dialog.setPresenter(this);
+    }
+
+    @Override
+    public void initiateEditMode(String editingTaskID) {
+        this.task = model.getTask(editingTaskID);
+        dueDateString = task.getDueDateString();
+        durationString = task.getDurationString();
+        dueTimeString = task.getDueTimeString();
+
+        activity.setTaskTitle(task.getTitle());
+        if (dueDateString != null)
+        {
+            activity.setDueDateSelectedWith(dueDateString);
+        }
+        if (dueTimeString != null)
+        {
+            activity.setDueTimeSelectedWith(dueTimeString);
+        }
+        if (durationString != null)
+        {
+            activity.setDurationSelectedWith(durationString);
+        }
+
     }
 
     @Override
@@ -161,13 +185,38 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
 
     @Override
     public void onPickerDueDateClicked(int year, int month, int day) {
-        LocalDateTime dueDate = new LocalDateTime(year, month + 1, day, 11, 59);
+        LocalDateTime dueDate = new LocalDateTime(year, month + 1, day, 23, 59);
         task.setDueDateTime( dueDate );
         DateTimeFormatter fmt = DateTimeFormat.forPattern("MMM d");
         dueDateString = null;
         activity.setDueDateSelectedWith(dueDate.toString(fmt));
         dueTimeString = MIDNIGHT;
         activity.setDueTimeSelectedWith(dueTimeString);
+    }
+
+    @Override
+    public void clearDueDate() {
+        task.setDueDateTime(null);
+        dueDateString = null;
+        dueTimeString = null;
+        activity.clearDueDateSelection();
+        activity.clearDueTimeSelection();
+    }
+
+    @Override
+    public void clearDueTime()
+    {
+        task.setDueDateTime(task.getDueDateTime().withTime(23,59,0,0));
+        dueTimeString = MIDNIGHT;
+        activity.setDueTimeSelectedWith(MIDNIGHT);
+    }
+
+    @Override
+    public void clearDuration()
+    {
+        task.setDuration(null);
+        durationString = null;
+        activity.clearDurationSelection();
     }
 
     @Override

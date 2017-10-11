@@ -1,6 +1,7 @@
 package com.student.john.taskmanager2;
 
 
+import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.AFTERNOON;
@@ -34,6 +35,21 @@ public class TimeConverter {
             default:
                 System.out.println("TimeConverter got an invalid string: " + name);
                 return null;
+        }
+    }
+
+    public String getWordFromTime(LocalDateTime dateTime)
+    {
+        switch (dateTime.getHourOfDay())
+        {
+            case 10:
+                return MORNING;
+            case 15:
+                return AFTERNOON;
+            case 20:
+                return EVENING;
+            default:
+                return MIDNIGHT;
         }
     }
 

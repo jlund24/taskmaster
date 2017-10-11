@@ -7,7 +7,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    tools:context="com.student.john.taskmanager2.addEditTaskViews_Presenters.Add_EditTaskActivity">
+    tools:context="com.student.john.taskmanager2.addEditTaskViews_Presenters.Add_EditTaskActivity"
+    android:clickable="true"
+    android:focusableInTouchMode="true" >
 
     <EditText
         android:layout_weight="0.1"

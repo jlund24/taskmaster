@@ -15,5 +15,6 @@ public interface ICustomTimePeriod {
     void minus(ICustomTimePeriod duration);
     Duration getDurationObject();
     Period getPeriodObject();
+    String getDueDateString();
 
 }

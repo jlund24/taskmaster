@@ -33,6 +33,7 @@ public class ClientModel {
     private static final ClientModel ourInstance = new ClientModel();
     private TaskList allTasks = new TaskList();
     private TaskList currentlyShownTasks = new TaskList();
+    private Map<String, Task> allTasksMap = new HashMap<>();
 
     private Map<ButtonEnum, String> buttonToContentMap = new HashMap<>();
     private Map<String, ButtonEnum> contentToButtonMap = new HashMap<>();
@@ -93,11 +94,18 @@ public class ClientModel {
 
     public void addTask(Task task)
     {
+
         allTasks.add(task);
+        allTasksMap.put(task.getTaskID(), task);
     }
 
     public TaskList getAllTasks()
     {
         return this.allTasks;
+    }
+
+    public Task getTask(String taskID)
+    {
+        return allTasksMap.get(taskID);
     }
 }

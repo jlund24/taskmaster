@@ -92,11 +92,7 @@ public class TaskFragment extends Fragment {
         List<Task> tasks = taskList.getTaskList();
 
         //use adapter to update
-        if (adapter == null)
-        {
-
-        }
-        else
+        if (adapter != null)
         {
             adapter.setValues(tasks);
             adapter.notifyDataSetChanged();

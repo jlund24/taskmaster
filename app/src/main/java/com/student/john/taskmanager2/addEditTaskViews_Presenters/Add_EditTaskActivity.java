@@ -1,10 +1,13 @@
 package com.student.john.taskmanager2.addEditTaskViews_Presenters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -23,6 +26,8 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
     private EditText titleEditText;
     private IAdd_EditTaskPresenter presenter;
 
+    private static final String EXTRA_TASK_ID_TO_EDIT = "com.student.john.taskmanager2.add_edittaskactivity.task_id_to_edit";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +39,19 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
         dueDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(view);
                 presenter.onDueDateClicked();
             }
         });
+
 
         dueTimeButton = (Button) findViewById(R.id.dueTimeButton);
         dueTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(view);
                 presenter.onDueTimeClicked();
+
             }
         });
 
@@ -50,6 +59,7 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
         durationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideKeyboard(view);
                 presenter.onDurationClicked();
             }
         });
@@ -63,6 +73,20 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
         });
 
         titleEditText = (EditText) findViewById(R.id.taskTitleEditText);
+        titleEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard(v);
+                }
+            }
+        });
+
+        String editingTaskID = getIntent().getStringExtra(EXTRA_TASK_ID_TO_EDIT);
+        if (editingTaskID != null)
+        {
+            presenter.initiateEditMode(editingTaskID);
+        }
     }
 
     @Override
@@ -97,6 +121,13 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
 
     }
 
+    public static Intent newIntent(Context packageContext, String taskID)
+    {
+        Intent i = new Intent(packageContext, Add_EditTaskActivity.class);
+        i.putExtra(EXTRA_TASK_ID_TO_EDIT, taskID);
+        return i;
+    }
+
     public void setDueDateSelectedWith(String text)
     {
         dueDateButton.setText(text);
@@ -117,8 +148,37 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
         return titleEditText.getText().toString();
     }
 
+    public void clearDueDateSelection()
+    {
+        dueDateButton.setText(R.string.add_due_date);
+    }
+
+    public void clearDueTimeSelection()
+    {
+        dueTimeButton.setText(R.string.add_due_time);
+    }
+
+    public void clearDurationSelection(){
+        durationButton.setText(R.string.add_duration);
+    }
+
+    public void clearPrioritySelection()
+    {
+
+    }
+
     public void closeActivity()
     {
-        this.finish();
+        onBackPressed();
+    }
+
+    public void setTaskTitle(String title)
+    {
+        titleEditText.setText(title);
+    }
+
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Add_EditTaskActivity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 }

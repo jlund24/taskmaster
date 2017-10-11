@@ -2,8 +2,11 @@ package com.student.john.taskmanager2;
 
 
 import com.student.john.taskmanager2.models.CustomTimePeriod;
+import com.student.john.taskmanager2.models.ICustomTimePeriod;
 
 import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_1;
 import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_10;
@@ -62,5 +65,32 @@ public class DurationConverter {
                 System.out.println("DurationConverter got an invalid string: " + name);
                 return null;
         }
+    }
+
+    public String getWordFromDuration(ICustomTimePeriod duration)
+    {
+        PeriodFormatterBuilder builder = new PeriodFormatterBuilder();
+
+        if (duration.getHours() > 0)
+        {
+            builder.appendHours().appendSuffix("h");
+            if (duration.getMinutes() > 0)
+            {
+                builder.appendLiteral(" ");
+            }
+        }
+
+        if (duration.getMinutes() > 0)
+        {
+            builder.printZeroAlways()
+                .minimumPrintedDigits(2)
+                .appendMinutes()
+                .appendSuffix("m");
+        }
+
+        PeriodFormatter fmt = builder.toFormatter();
+
+        return duration.getPeriodObject().toString(fmt);
+
     }
 }

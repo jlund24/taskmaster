@@ -4,7 +4,11 @@ package com.student.john.taskmanager2.models;
 import android.support.annotation.NonNull;
 
 import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
+
+import static com.student.john.taskmanager2.DateConverter.DateStringValues.OVERDUE;
+import static com.student.john.taskmanager2.DateConverter.DateStringValues.TODAY;
 
 public class CustomTimePeriod implements ICustomTimePeriod{
 
@@ -25,7 +29,8 @@ public class CustomTimePeriod implements ICustomTimePeriod{
 
     private long getMillisFromPeriod(Period period)
     {
-        long totalMillis = period.getHours() * 60L * 60L * 1000L;
+        long totalMillis = period.getDays() * 24L * 60L * 1000L;
+        totalMillis += period.getHours() * 60L * 60L * 1000L;
         totalMillis += period.getMinutes() * 60L * 1000L;
         return totalMillis;
     }
@@ -74,6 +79,37 @@ public class CustomTimePeriod implements ICustomTimePeriod{
     @Override
     public Period getPeriodObject() {
         return this.period;
+    }
+
+    @Override
+    public String getDueDateString() {
+        LocalDateTime now = new LocalDateTime();
+
+        if (this.duration.getMillis() < 0)
+        {
+            return OVERDUE;
+        }
+        else if (this.period.getDays() == 0)
+        {
+            return TODAY;
+        }
+        else if (this.period.getDays() == 1)
+        {
+
+        }
+
+        //Today
+        //Tomorrow
+        //if within a week, but not today or tomorrow, show weekday
+        //Monday
+        //Tuesday
+        //Wednesday
+        //Thursday
+        //Friday
+        //saturday
+        //sunday
+        //beyond that, show date in "Oct 10" format
+        return null;
     }
 
 }

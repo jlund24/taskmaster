@@ -3,10 +3,15 @@ package com.student.john.taskmanager2.models;
 
 import android.support.annotation.NonNull;
 
+import com.student.john.taskmanager2.DateConverter;
+import com.student.john.taskmanager2.DurationConverter;
+import com.student.john.taskmanager2.TimeConverter;
+
 import org.joda.time.Days;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
+import org.joda.time.Period;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -25,8 +30,8 @@ public class Task implements ITask, Comparable {
     //private String user;
     private Integer priority = null;
     private LocalDateTime dueDateTime = null;
-    private ICustomTimePeriod duration = new CustomTimePeriod(new Duration(0));
-    private ICustomTimePeriod divisibleUnit = new CustomTimePeriod(new Duration(0));
+    private ICustomTimePeriod duration = null;
+    private ICustomTimePeriod divisibleUnit = null;
     private Boolean completed = false;
     private String taskID = null;
 
@@ -41,7 +46,9 @@ public class Task implements ITask, Comparable {
     }
 
     //for sorting
-    public Task(){};
+    public Task(){
+        this.taskID = UUID.randomUUID().toString();
+    };
 
     public Task (String title, Map<String, Object> params)
     {
@@ -205,5 +212,35 @@ public class Task implements ITask, Comparable {
         {
             this.taskID = UUID.randomUUID().toString();
         }
+    }
+
+    public String getDueDateString()
+    {
+        if (dueDateTime != null)
+        {
+            DateConverter converter = new DateConverter();
+            return converter.getWordFromDate(this.dueDateTime);
+        }
+        return null;
+    }
+
+    public String getDurationString()
+    {
+        if (duration != null)
+        {
+            DurationConverter converter = new DurationConverter();
+            return converter.getWordFromDuration(this.duration);
+        }
+        return null;
+    }
+
+    public String getDueTimeString()
+    {
+        if (dueDateTime != null)
+        {
+            TimeConverter converter = new TimeConverter();
+            return converter.getWordFromTime(this.dueDateTime);
+        }
+        return null;
     }
 }

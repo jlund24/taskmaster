@@ -3,6 +3,7 @@ package com.student.john.taskmanager2.addEditTaskViews_Presenters;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
@@ -55,6 +56,12 @@ public class DueTimePickerFragment extends DialogFragment {
         dialogBuilder.setView(v);
 
         dialogBuilder.setTitle(R.string.due_time);
+        dialogBuilder.setPositiveButton("Clear", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.clearDueTime();
+            }
+        });
         Dialog dialog = dialogBuilder.create();
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
