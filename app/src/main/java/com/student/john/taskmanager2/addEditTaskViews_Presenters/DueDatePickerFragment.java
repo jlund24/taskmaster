@@ -10,13 +10,15 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.student.john.taskmanager2.ClientModel;
+import com.student.john.taskmanager2.DateConverter;
 import com.student.john.taskmanager2.R;
+
+import org.joda.time.LocalDateTime;
 
 import java.util.Calendar;
 
@@ -51,10 +53,22 @@ public class DueDatePickerFragment extends DialogFragment {
         dialogBuilder.setView(v);
         initializeViews(v);
         dialogBuilder.setTitle(R.string.due_date);
-        dialogBuilder.setPositiveButton("Clear", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                presenter.clearDueDate();
+                presenter.onDueDateCancelClicked();
+            }
+        });
+        dialogBuilder.setNeutralButton("Clear", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.onDueDateClearClicked();
+            }
+        });
+        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.onDueDateSaveClicked();
             }
         });
         Dialog dialog = dialogBuilder.create();
@@ -69,7 +83,9 @@ public class DueDatePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onTopLeftDueDateOptionClicked();
-                dismiss();
+                clearButtons();
+                clearDatePickerDate();
+                topLeftDueDateButton.setChecked(true);
             }
         });
 
@@ -78,7 +94,9 @@ public class DueDatePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onTopRightDueDateOptionClicked();
-                dismiss();
+                clearButtons();
+                clearDatePickerDate();
+                topRightDueDateButton.setChecked(true);
             }
         });
 
@@ -87,7 +105,9 @@ public class DueDatePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onBottomLeftDueDateOptionClicked();
-                dismiss();
+                clearButtons();
+                clearDatePickerDate();
+                bottomLeftDueDateButton.setChecked(true);
             }
         });
 
@@ -96,7 +116,9 @@ public class DueDatePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onBottomRightDueDateOptionClicked();
-                dismiss();
+                clearButtons();
+                clearDatePickerDate();
+                bottomRightDueDateButton.setChecked(true);
             }
         });
 
@@ -110,7 +132,7 @@ public class DueDatePickerFragment extends DialogFragment {
             public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
                 presenter.onPickerDueDateClicked(datePicker.getYear(), datePicker.getMonth(),
                         datePicker.getDayOfMonth());
-                dismiss();
+                clearButtons();
             }
         });
 
@@ -156,6 +178,7 @@ public class DueDatePickerFragment extends DialogFragment {
     {
         button.setTextOn(text);
         button.setTextOff(text);
+        button.setText(text);
     }
 
     private void setChecked(ToggleButton button, Boolean checked)
@@ -195,9 +218,65 @@ public class DueDatePickerFragment extends DialogFragment {
             public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
                 presenter.onPickerDueDateClicked(datePicker.getYear(), datePicker.getMonth(),
                         datePicker.getDayOfMonth());
-                dismiss();
+                clearButtons();
             }
         });
+    }
+
+    private void clearDatePickerDate()
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                presenter.onPickerDueDateClicked(datePicker.getYear(), datePicker.getMonth(),
+                        datePicker.getDayOfMonth());
+                clearButtons();
+            }
+        });
+    }
+
+    private void clearButtons()
+    {
+        topLeftDueDateButton.setChecked(false);
+        topRightDueDateButton.setChecked(false);
+        bottomLeftDueDateButton.setChecked(false);
+        bottomRightDueDateButton.setChecked(false);
+
+    }
+
+    public LocalDateTime getDateFromDatePicker()
+    {
+        return new LocalDateTime(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth(),
+                23,59);
+    }
+
+    public String getDueDateString()
+    {
+        if (topLeftDueDateButton.isChecked())
+        {
+            return topLeftDueDateButton.getText().toString();
+        }
+        else if (topRightDueDateButton.isChecked())
+        {
+            return topRightDueDateButton.getText().toString();
+        }
+        else if (bottomLeftDueDateButton.isChecked())
+        {
+            return bottomLeftDueDateButton.getText().toString();
+        }
+        else if (bottomRightDueDateButton.isChecked())
+        {
+            return bottomRightDueDateButton.getText().toString();
+        }
+        else
+        {
+            DateConverter converter = new DateConverter();
+            return converter.getWordFromDate(new LocalDateTime(datePicker.getYear(),
+                    datePicker.getMonth() + 1, datePicker.getDayOfMonth(),23,59));
+        }
     }
 
     public void setPresenter(IAdd_EditTaskPresenter presenter) {

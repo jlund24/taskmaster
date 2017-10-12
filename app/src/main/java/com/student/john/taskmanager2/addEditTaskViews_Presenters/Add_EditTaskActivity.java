@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.student.john.taskmanager2.R;
 import com.student.john.taskmanager2.models.Task;
@@ -165,6 +166,12 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
     public void clearPrioritySelection()
     {
 
+    }
+
+    public void makeToast(String text)
+    {
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     public void closeActivity()

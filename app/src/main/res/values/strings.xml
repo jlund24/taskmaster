@@ -12,11 +12,14 @@
     <string name="tomorrow">Tomorrow</string>
     <string name="friday">Friday</string>
     <string name="one_week">1 Week</string>
+    <string name="allow_segments">Allow segments</string>
 
     <string name="due_date">Due Date</string>
     <string name="due_time">Due Time</string>
     <string name="duration">Duration</string>
     <string name="priority">Priority</string>
+    <string name="divisible_unit_text">Minimum segment length</string>
+    <string name="divisible_unit_note">If selected, plans you generate may break up longer tasks into smaller segments to accommodate the time you have.</string>
 
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
@@ -37,4 +40,66 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string-array name="duration_hour_options">
+        <item name="hours">Hours</item>
+        <item name="0">0</item>
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="3">3</item>
+        <item name="4">4</item>
+        <item name="5">5</item>
+        <item name="6">6</item>
+        <item name="7">7</item>
+        <item name="8">8</item>
+        <item name="9">9</item>
+        <item name="10">10</item>
+        <item name="11">11</item>
+        <item name="12">12</item>
+        <item name="13">13</item>
+        <item name="14">14</item>
+        <item name="15">15</item>
+        <item name="16">16</item>
+        <item name="17">17</item>
+        <item name="18">18</item>
+        <item name="19">19</item>
+        <item name="20">20</item>
+
+    </string-array>
+
+    <string-array name="duration_minute_options">
+        <item name="minutes">Minutes</item>
+        <item name="00">00</item>
+        <item name="15">15</item>
+        <item name="30">30</item>
+        <item name="45">45</item>
+    </string-array>
+
+    <string-array name="divisible_unit_hour_options">
+        <item name="hours">Hours</item>
+        <item name="0">0</item>
+        <item name="1">1</item>
+        <item name="2">2</item>
+        <item name="3">3</item>
+        <item name="4">4</item>
+        <item name="5">5</item>
+        <item name="6">6</item>
+        <item name="7">7</item>
+        <item name="8">8</item>
+        <item name="9">9</item>
+        <item name="10">10</item>
+    </string-array>
+
+    <string-array name="divisible_unit_minute_options">
+        <item name="minutes">Minutes</item>
+        <item name="00">00</item>
+        <item name="15">15</item>
+        <item name="30">30</item>
+        <item name="45">45</item>
+    </string-array>
+
+    <string name="working">Working:</string>
+    <string name="time_to_work">How much time do you have to spend today?</string>
+    <string name="clear">Clear</string>
+    <string name="make_plan">Make Plan</string>
 </resources>

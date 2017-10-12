@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 
-import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -56,10 +55,24 @@ public class DueTimePickerFragment extends DialogFragment {
         dialogBuilder.setView(v);
 
         dialogBuilder.setTitle(R.string.due_time);
-        dialogBuilder.setPositiveButton("Clear", new DialogInterface.OnClickListener() {
+        dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                presenter.clearDueTime();
+                presenter.onDueTimeCancelClicked();
+            }
+        });
+
+        dialogBuilder.setNeutralButton("Clear", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.onDueTimeClearClicked();
+            }
+        });
+
+        dialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.onDueTimeSaveClicked();
             }
         });
         Dialog dialog = dialogBuilder.create();
@@ -74,7 +87,8 @@ public class DueTimePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onDueTimeButtonOptionClicked(DT_TOP_LEFT);
-                dismiss();
+                clearButtons();
+                topLeftDueTimeButton.setChecked(true);
             }
         });
 
@@ -83,7 +97,8 @@ public class DueTimePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onDueTimeButtonOptionClicked(DT_TOP_RIGHT);
-                dismiss();
+                clearButtons();
+                topRightDueTimeButton.setChecked(true);
             }
         });
 
@@ -92,7 +107,8 @@ public class DueTimePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onDueTimeButtonOptionClicked(DT_BOTTOM_LEFT);
-                dismiss();
+                clearButtons();
+                bottomLeftDueTimeButton.setChecked(true);
             }
         });
 
@@ -101,18 +117,10 @@ public class DueTimePickerFragment extends DialogFragment {
             @Override
             public void onClick(View view) {
                 presenter.onDueTimeButtonOptionClicked(DT_BOTTOM_RIGHT);
-                dismiss();
+                clearButtons();
+                bottomRightDueTimeButton.setChecked(true);
             }
         });
-
-//        timePicker = v.findViewById(R.id.dueTime_timePicker);
-//        timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-//            @Override
-//            public void onTimeChanged(TimePicker timePicker, int hour, int minute) {
-//                presenter.onPickerDueTimeClicked(hour, minute);
-//                dismiss();
-//            }
-//        });
 
         presenter.getDueTimePickerConfiguration(this);
 
@@ -179,6 +187,38 @@ public class DueTimePickerFragment extends DialogFragment {
                 Toast toast = Toast.makeText(getActivity(), "Unknown button specified", Toast.LENGTH_SHORT);
                 toast.show();
                 break;
+        }
+    }
+
+    private void clearButtons()
+    {
+        bottomLeftDueTimeButton.setChecked(false);
+        bottomRightDueTimeButton.setChecked(false);
+        topRightDueTimeButton.setChecked(false);
+        topLeftDueTimeButton.setChecked(false);
+    }
+
+    public String getDueTimeString()
+    {
+        if (topLeftDueTimeButton.isChecked())
+        {
+            return topLeftDueTimeButton.getText().toString();
+        }
+        else if (topRightDueTimeButton.isChecked())
+        {
+            return topRightDueTimeButton.getText().toString();
+        }
+        else if (bottomLeftDueTimeButton.isChecked())
+        {
+            return bottomLeftDueTimeButton.getText().toString();
+        }
+        else if (bottomRightDueTimeButton.isChecked())
+        {
+            return bottomRightDueTimeButton.getText().toString();
+        }
+        else
+        {
+            return null;
         }
     }
 

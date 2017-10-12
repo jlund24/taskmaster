@@ -1,9 +1,14 @@
 package com.student.john.taskmanager2;
 
 
+import com.student.john.taskmanager2.models.CustomTimePeriod;
+import com.student.john.taskmanager2.models.Plan;
 import com.student.john.taskmanager2.models.Task;
 import com.student.john.taskmanager2.models.TaskList;
 
+import org.joda.time.Period;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +39,8 @@ public class ClientModel {
     private TaskList allTasks = new TaskList();
     private TaskList currentlyShownTasks = new TaskList();
     private Map<String, Task> allTasksMap = new HashMap<>();
+
+    private Plan currentPlan;
 
     private Map<ButtonEnum, String> buttonToContentMap = new HashMap<>();
     private Map<String, ButtonEnum> contentToButtonMap = new HashMap<>();
@@ -108,4 +115,60 @@ public class ClientModel {
     {
         return allTasksMap.get(taskID);
     }
+
+    public void setCurrentPlan(Plan plan)
+    {
+        this.currentPlan = plan;
+    }
+
+    public Plan getCurrentPlan()
+    {
+        ArrayList<Task> taskList = new ArrayList<>();
+        taskList.add(new Task("hey", new HashMap<String, Object>()));
+        taskList.add(new Task("hi", new HashMap<String, Object>()));
+        TaskList tasks = new TaskList(taskList);
+        currentPlan = new Plan(tasks, new CustomTimePeriod(new Period(3,0,0,0)));
+        return currentPlan;
+    }
+
+    public void generatePlan(CustomTimePeriod duration)
+    {
+        currentPlan = new Plan(getTasksForPlan(duration), duration);
+    }
+
+    private TaskList getTasksForPlan(CustomTimePeriod duration)
+    {
+        allTasks.sortByPoints();
+        System.out.println(allTasks.toString());
+
+        long minutesToWork = duration.getTotalAsMinutes();
+        TaskList forToday = new TaskList();
+
+        while(minutesToWork >= 15)
+        {
+            for (Task task : allTasks.getTaskList())
+            {
+                if (task.getDivisibleUnit().getTotalAsMinutes() != 0 &&
+                        task.getDivisibleUnit().getTotalAsMinutes() <= minutesToWork)
+                {
+                    Task taskFragment = new Task(task);
+                    task.reduceDurationOneUnit();
+                    forToday.add(taskFragment);
+                    minutesToWork -= taskFragment.getDuration().getTotalAsMinutes();
+                    break;
+                }
+                else if (task.getDuration().getTotalAsMinutes() <= minutesToWork)
+                {
+                    forToday.add(task);
+                    minutesToWork -= task.getDuration().getTotalAsMinutes();
+                    allTasks.removeTask(task);
+                    break;
+                }
+            }
+            allTasks.sortByPoints();
+        }
+        return forToday;
+    }
+
+
 }

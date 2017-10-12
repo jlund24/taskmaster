@@ -19,16 +19,25 @@ interface IAdd_EditTaskPresenter {
     void onBottomRightDueDateOptionClicked();
     void getDueDatePickerConfiguration(DueDatePickerFragment dialog);
     void onPickerDueDateClicked(int year, int month, int day);
-    void clearDueDate();
+    void onDueDateClearClicked();
+    void onDueDateCancelClicked();
+    void onDueDateSaveClicked();
 
     //DueTimePickerFragment callbacks
     void onDueTimeButtonOptionClicked(ClientModel.ButtonEnum button);
     void onPickerDueTimeClicked(int hour, int minute);
     void getDueTimePickerConfiguration(DueTimePickerFragment dialog);
-    void clearDueTime();
+    void onDueTimeClearClicked();
+    void onDueTimeCancelClicked();
+    void onDueTimeSaveClicked();
 
     //DurationPickerFragment callbacks
     void onDurationButtonOptionClicked(ClientModel.ButtonEnum button);
     void getDurationPickerConfiguration(DurationPickerFragment dialog);
-    void clearDuration();
+    void onDurationClearClicked();
+    void onDurationCancelClicked();
+    void onDurationSaveClicked();
+    void onDurationSpinnerItemSelected();
+    void onDivisibleUnitCheckBoxChanged(boolean checked);
+    void onDivisibleUnitItemSelected();
 }

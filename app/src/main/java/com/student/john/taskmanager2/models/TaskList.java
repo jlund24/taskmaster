@@ -21,6 +21,16 @@ public class TaskList {
         this.taskMap = taskMap;
     }
 
+    public TaskList(List<Task> taskList)
+    {
+        this.taskList = taskList;
+        this.taskMap = new HashMap<String, Task>();
+        for(Task task : taskList)
+        {
+            taskMap.put(task.getTaskID(), task);
+        }
+    }
+
     public TaskList()
     {
 
@@ -105,6 +115,20 @@ public class TaskList {
     {
         this.taskList.remove(task);
         this.taskMap.remove(task.getTaskID());
+    }
+
+    public void removeTaskByID(String taskID)
+    {
+        if (taskMap.containsKey(taskID))
+        {
+            taskList.remove (taskMap.get(taskID));
+            taskMap.remove(taskID);
+        }
+    }
+
+    public Task getTask(String taskID)
+    {
+        return taskMap.get(taskID);
     }
 
 
