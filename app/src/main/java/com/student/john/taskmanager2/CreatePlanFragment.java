@@ -37,7 +37,7 @@ public class CreatePlanFragment extends Fragment {
         hoursSpinner = v.findViewById(R.id.create_plan_hours_spinner);
         minutesSpinner = v.findViewById(R.id.create_plan_minutes_spinner);
 
-        saveButton = v.findViewById(R.id.taskSaveButton);
+        saveButton = v.findViewById(R.id.make_plan_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

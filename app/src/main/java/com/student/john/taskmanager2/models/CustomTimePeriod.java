@@ -65,10 +65,20 @@ public class CustomTimePeriod implements ICustomTimePeriod{
         return period.getMinutes();
     }
 
-    public void minus(ICustomTimePeriod duration)
+    public Duration minus(ICustomTimePeriod duration)
     {
-        this.duration = this.duration.minus(duration.getDurationObject());
-        this.period = this.period.minus(duration.getPeriodObject());
+        Duration returnValue = this.duration.minus(duration.getDurationObject());
+        if (returnValue.getStandardMinutes() < 0)
+        {
+            returnValue = new Duration(0);
+        }
+        return returnValue;
+    }
+
+    public Duration plus(ICustomTimePeriod duration)
+    {
+        return this.duration.plus(duration.getDurationObject());
+
     }
 
     @Override
@@ -81,35 +91,6 @@ public class CustomTimePeriod implements ICustomTimePeriod{
         return this.period;
     }
 
-    @Override
-    public String getDueDateString() {
-        LocalDateTime now = new LocalDateTime();
 
-        if (this.duration.getMillis() < 0)
-        {
-            return OVERDUE;
-        }
-        else if (this.period.getDays() == 0)
-        {
-            return TODAY;
-        }
-        else if (this.period.getDays() == 1)
-        {
-
-        }
-
-        //Today
-        //Tomorrow
-        //if within a week, but not today or tomorrow, show weekday
-        //Monday
-        //Tuesday
-        //Wednesday
-        //Thursday
-        //Friday
-        //saturday
-        //sunday
-        //beyond that, show date in "Oct 10" format
-        return null;
-    }
 
 }

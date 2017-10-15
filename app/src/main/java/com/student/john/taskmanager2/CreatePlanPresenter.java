@@ -17,7 +17,7 @@ public class CreatePlanPresenter {
         if (durationString != null)
         {
             //generate plan
-            DurationConverter converter = new DurationConverter();
+            CustomDurationConverter converter = new CustomDurationConverter();
             CustomTimePeriod duration = converter.getDurationFromWord(durationString);
             if (duration != null)
             {

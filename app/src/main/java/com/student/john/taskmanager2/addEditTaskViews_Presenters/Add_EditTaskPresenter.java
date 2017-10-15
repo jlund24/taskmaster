@@ -5,21 +5,18 @@ import android.support.v4.app.FragmentManager;
 
 import com.student.john.taskmanager2.ClientModel;
 import com.student.john.taskmanager2.DateConverter;
-import com.student.john.taskmanager2.DurationConverter;
+import com.student.john.taskmanager2.CustomDurationConverter;
 import com.student.john.taskmanager2.TimeConverter;
 import com.student.john.taskmanager2.models.CustomTimePeriod;
 import com.student.john.taskmanager2.models.Task;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MIDNIGHT;
-import static com.student.john.taskmanager2.models.Task.TaskParamTitle.DUE_DATE_TIME;
 
 
 public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
@@ -40,7 +37,7 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
     private ClientModel model = ClientModel.getInstance();
     private DateConverter dateConverter = new DateConverter();
     private TimeConverter timeConverter = new TimeConverter();
-    private DurationConverter durationConverter = new DurationConverter();
+    private CustomDurationConverter durationConverter = new CustomDurationConverter();
 
 
     public final String DUE_DATE_PICKER_DIALOG = "DueDatePickerDialog";
@@ -90,6 +87,11 @@ public class Add_EditTaskPresenter implements IAdd_EditTaskPresenter {
                         task.setDivisibleUnit(divisibleUnit);
                     }
                 }
+            }
+
+            if (task.getDueDateTime() == null || task.getDuration() == null)
+            {
+                activity.makeToast("This task cannot be planned because it does not have a due date and duration set.");
             }
 
             task.generateTaskID();

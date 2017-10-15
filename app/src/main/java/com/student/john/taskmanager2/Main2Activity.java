@@ -125,14 +125,7 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
             }
             else
             {
-                if (ClientModel.getInstance().getCurrentPlan() == null)
-                {
-                    return CreatePlanFragment.newInstance();
-                }
-                else
-                {
-                    return PlanFragment.newInstance();
-                }
+                return PlanFragment.newInstance();
 
             }
 
@@ -158,6 +151,6 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
 
     public void switchPlanFragment()
     {
-
+        mViewPager.setCurrentItem(1);
     }
 }

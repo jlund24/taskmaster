@@ -6,37 +6,121 @@
               android:gravity="center_horizontal"
              tools:context="com.student.john.taskmanager2.PlanFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <LinearLayout
+        android:id="@+id/create_plan_layout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/working"
-            android:textSize="24sp"/>
+            android:lines="2"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:text="@string/time_to_work"
+            android:textSize="20sp"/>
 
-        <TextView
+        <LinearLayout
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Spinner
+                android:layout_width="125dp"
+                android:layout_height="30dp"
+                android:id="@+id/create_plan_hours_spinner"
+                android:layout_marginRight="10dp"
+                android:entries="@array/divisible_unit_hour_options"
+                android:minWidth="125dp"
+
+                />
+
+            <Spinner
+                android:layout_width="125dp"
+                android:layout_height="30dp"
+                android:id="@+id/create_plan_minutes_spinner"
+
+                android:entries="@array/divisible_unit_minute_options"
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/make_plan_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="4h"
-            android:textSize="24sp"
-            android:textStyle="bold"/>
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit_black_24dp"
-            android:background="@null"
-            />
+            android:text="@string/make_plan"/>
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <LinearLayout
+        android:id="@+id/plan_list_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/plan_recyclerView"
-        android:divider="#656565"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/working_time_layout"
+            android:layout_weight="0.1"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/working_textView"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/working"
+                android:textSize="24sp"/>
+
+            <TextView
+                android:id="@+id/plan_duration"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4h"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
+
+            <ImageButton
+                android:id="@+id/plan_duration_edit_button"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit_black_24dp"
+                android:background="@null"
+                />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_weight="0.9"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+
+            android:id="@+id/plan_recyclerView"
+            android:divider="#656565"/>
+
+    </LinearLayout>
 
 </LinearLayout>

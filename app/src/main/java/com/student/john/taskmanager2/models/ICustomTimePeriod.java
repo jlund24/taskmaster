@@ -12,9 +12,10 @@ public interface ICustomTimePeriod {
     int getDays();
     int getHours();
     int getMinutes();
-    void minus(ICustomTimePeriod duration);
+    Duration minus(ICustomTimePeriod duration);
+    Duration plus (ICustomTimePeriod duration);
     Duration getDurationObject();
     Period getPeriodObject();
-    String getDueDateString();
+
 
 }

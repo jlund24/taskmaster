@@ -211,7 +211,7 @@ public class TaskSortingTest {
                         task.getDivisibleUnit().getTotalAsMinutes() <= minutesToWork)
                 {
                     Task taskFragment = new Task(task);
-                    task.reduceDurationOneUnit();
+                    //task.reduceDurationOneUnit();
                     forToday.add(taskFragment);
                     minutesToWork -= taskFragment.getDuration().getTotalAsMinutes();
                     break;
@@ -320,7 +320,7 @@ public class TaskSortingTest {
                         task.getDivisibleUnit().getTotalAsMinutes() <= minutesToWork)
                 {
                     Task taskFragment = new Task(task);
-                    task.reduceDurationOneUnit();
+                    //task.reduceDurationOneUnit();
                     forToday.add(taskFragment);
                     minutesToWork -= taskFragment.getDuration().getTotalAsMinutes();
                     break;
@@ -340,6 +340,8 @@ public class TaskSortingTest {
         System.out.println("----------------------------------------------");
         System.out.println(taskList.toString());
     }
+
+
 
 
 

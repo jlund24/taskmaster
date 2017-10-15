@@ -2,18 +2,17 @@ package com.student.john.taskmanager2.models;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.student.john.taskmanager2.DateConverter;
-import com.student.john.taskmanager2.DurationConverter;
+import com.student.john.taskmanager2.CustomDurationConverter;
 import com.student.john.taskmanager2.TimeConverter;
 
 import org.joda.time.Days;
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
-import org.joda.time.Period;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,7 +30,11 @@ public class Task implements ITask, Comparable {
     private Integer priority = null;
     private LocalDateTime dueDateTime = null;
     private ICustomTimePeriod duration = null;
+    //how much of the task has been completed (used for DivisibleUnit stuff)
+    private ICustomTimePeriod durationCompleted = null;
+    private ICustomTimePeriod durationPlanned = null;
     private ICustomTimePeriod divisibleUnit = null;
+    private Boolean planned = false;
     private Boolean completed = false;
     private String taskID = null;
 
@@ -53,20 +56,23 @@ public class Task implements ITask, Comparable {
     public Task (String title, Map<String, Object> params)
     {
         this.title = title;
+        if (params != null)
+        {
+            //get rest of the provided parameters
+            this.dueDateTime = params.containsKey(DUE_DATE_TIME) ? (LocalDateTime) params.get(DUE_DATE_TIME) : null;
 
-        //get rest of the provided parameters
-        this.dueDateTime = params.containsKey(DUE_DATE_TIME) ? (LocalDateTime) params.get(DUE_DATE_TIME) : null;
+            this.priority = params.containsKey(PRIORITY) ? (Integer) params.get(PRIORITY) : null;
 
-        this.priority = params.containsKey(PRIORITY) ? (Integer) params.get(PRIORITY) : null;
+            this.duration = params.containsKey(DURATION) ? (ICustomTimePeriod) params.get(DURATION) : new CustomTimePeriod(new Duration(0));
 
-        this.duration = params.containsKey(DURATION) ? (ICustomTimePeriod) params.get(DURATION) : new CustomTimePeriod(new Duration(0));
+            this.divisibleUnit = params.containsKey(DIVISIBLE_UNIT) ? (ICustomTimePeriod) params.get(DIVISIBLE_UNIT) :
+                    new CustomTimePeriod(new Duration(0));
 
-        this.divisibleUnit = params.containsKey(DIVISIBLE_UNIT) ? (ICustomTimePeriod) params.get(DIVISIBLE_UNIT) :
-                new CustomTimePeriod(new Duration(0));
+            this.completed = params.containsKey(COMPLETED) ? (Boolean) params.get(COMPLETED) : false;
 
-        this.completed = params.containsKey(COMPLETED) ? (Boolean) params.get(COMPLETED) : false;
+            this.taskID = params.containsKey(TASKID) ? (String) params.get(TASKID) : null;
+        }
 
-        this.taskID = params.containsKey(TASKID) ? (String) params.get(TASKID) : null;
 
         if (this.taskID == null)
         {
@@ -85,6 +91,8 @@ public class Task implements ITask, Comparable {
         this.completed = task.completed;
         this.taskID = UUID.randomUUID().toString();
     }
+
+
 
 
     public String getTitle() {
@@ -112,11 +120,20 @@ public class Task implements ITask, Comparable {
     }
 
     public String getTaskID() {
+
+        if (taskID == null)
+        {
+            generateTaskID();
+        }
         return taskID;
     }
 
     public Double getPointValue()
     {
+        if (this.completed)
+        {
+            return 0d;
+        }
         return this.duration.getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
     }
 
@@ -148,8 +165,15 @@ public class Task implements ITask, Comparable {
         sb.append("Due Date: " + this.dueDateTime.getMonthOfYear() + "/" + this.dueDateTime.getDayOfMonth() + "/" + this.dueDateTime.getYear() + "\n");
         sb.append("Due Time: " + this.dueDateTime.getHourOfDay() + ":" + this.dueDateTime.getMinuteOfHour() + "\n");
         sb.append("Duration: " + this.duration.getHours() + ":" + this.duration.getMinutes() + "\n");
+        if (durationPlanned != null)
+        {
+            sb.append("Duration Planned: " + this.durationPlanned.getHours() + ":" + this.durationPlanned.getMinutes() + "\n");
+        }
         sb.append("Priority: " + this.priority + "\n");
-        sb.append("Divisible Unit: " + this.divisibleUnit.getHours() + ":" + this.divisibleUnit.getMinutes() + "\n");
+        if (divisibleUnit != null)
+        {
+            sb.append("Divisible Unit: " + this.divisibleUnit.getHours() + ":" + this.divisibleUnit.getMinutes() + "\n");
+        }
         sb.append("Completed: " + this.completed + "\n");
         sb.append("Points: " + this.getPointValue());
         return sb.toString();
@@ -171,11 +195,6 @@ public class Task implements ITask, Comparable {
         {
             return this.getDueDateTime().compareTo(task.getDueDateTime());
         }
-    }
-
-    public void reduceDurationOneUnit()
-    {
-        this.duration.minus(this.divisibleUnit);
     }
 
     public void setTitle(String title) {
@@ -228,7 +247,7 @@ public class Task implements ITask, Comparable {
     {
         if (duration != null)
         {
-            DurationConverter converter = new DurationConverter();
+            CustomDurationConverter converter = new CustomDurationConverter();
             return converter.getWordFromDuration(this.duration);
         }
         return null;
@@ -242,5 +261,127 @@ public class Task implements ITask, Comparable {
             return converter.getWordFromTime(this.dueDateTime);
         }
         return null;
+    }
+
+    public ICustomTimePeriod getDurationCompleted() {
+
+        if (durationCompleted == null)
+        {
+            durationCompleted = new CustomTimePeriod(new Duration(0));
+        }
+        return durationCompleted;
+    }
+
+    public void setDurationCompleted(ICustomTimePeriod durationCompleted) {
+        this.durationCompleted = durationCompleted;
+    }
+
+    public ICustomTimePeriod getDurationPlanned() {
+        return durationPlanned;
+    }
+
+    public void setDurationPlanned(ICustomTimePeriod durationPlanned) {
+        this.durationPlanned = durationPlanned;
+    }
+
+    public ICustomTimePeriod getDurationLeft()
+    {
+        if (this.durationCompleted != null && this.duration != null)
+        {
+           return new CustomTimePeriod(this.duration.minus(durationCompleted));
+        }
+        else if (this.duration != null)
+        {
+            return new CustomTimePeriod(this.duration.getDurationObject());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public ICustomTimePeriod getDurationLeftUnplanned()
+    {
+        ICustomTimePeriod durationLeft = getDurationLeft();
+        if (this.durationPlanned != null && durationLeft != null)
+        {
+            return new CustomTimePeriod(durationLeft.minus(durationPlanned));
+        }
+        else if (durationLeft != null)
+        {
+            return new CustomTimePeriod(durationLeft.getDurationObject());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void markOneDivisibleUnitCompleted()
+    {
+        if (this.durationCompleted == null)
+        {
+            this.durationCompleted = new CustomTimePeriod(new Duration(0));
+        }
+        if (this.divisibleUnit == null)
+        {
+            Log.d("Task","no divisible unit when markOneDivisbleUnitCompleted() called");
+            return;
+        }
+        this.durationCompleted = new CustomTimePeriod(this.durationCompleted.plus(this.divisibleUnit));
+    }
+
+    public void markOneDivisibleUnitPlanned()
+    {
+        if (this.durationPlanned == null)
+        {
+            this.durationPlanned = new CustomTimePeriod(new Duration(0));
+        }
+        if (this.divisibleUnit == null)
+        {
+            Log.d("Task","no divisible unit when markOneDivisbleUnitPlanned() called");
+            return;
+        }
+
+        this.durationPlanned = new CustomTimePeriod(this.durationPlanned.plus(this.divisibleUnit));
+    }
+
+    public void markOnePlannedUnitDone()
+    {
+        if (this.durationPlanned == null) {
+            Log.d("Task","no durationPlanned when markOnePlannedUnitDone() called");
+            return;
+        }
+        if (this.divisibleUnit == null){
+            Log.d("Task","no divisible unit when markOneDivisbleUnitPlanned() called");
+            return;
+        }
+
+        this.durationPlanned = new CustomTimePeriod(this.durationPlanned.minus(this.divisibleUnit));
+    }
+
+    public void markOneUnitDoneFromPlan()
+    {
+        markOneDivisibleUnitCompleted();
+        markOnePlannedUnitDone();
+    }
+
+    public void markFullTaskDoneFromPlan()
+    {
+        this.durationCompleted = new CustomTimePeriod(getDurationCompleted().plus(this.durationPlanned));
+        setDurationPlanned(null);
+        if (duration.getTotalAsMinutes() == durationCompleted.getTotalAsMinutes())
+        {
+            setCompleted(true);
+        }
+        setPlanned(false);
+    }
+
+    public Boolean getPlanned() {
+        return planned;
+    }
+
+    public void setPlanned(Boolean planned) {
+        this.planned = planned;
     }
 }

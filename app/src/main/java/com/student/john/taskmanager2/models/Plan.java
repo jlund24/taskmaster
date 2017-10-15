@@ -1,11 +1,13 @@
 package com.student.john.taskmanager2.models;
 
 
+import org.joda.time.Duration;
+
 public class Plan {
 
     private TaskList tasks;
-    private CustomTimePeriod duration;
-    private TaskList removedTasks;
+    private ICustomTimePeriod duration;
+    private TaskList removedTasks = new TaskList();
 
     public Plan(TaskList tasks, CustomTimePeriod duration)
     {
@@ -18,7 +20,7 @@ public class Plan {
         return tasks;
     }
 
-    public CustomTimePeriod getDuration() {
+    public ICustomTimePeriod getDuration() {
         return duration;
     }
 
@@ -30,7 +32,7 @@ public class Plan {
         this.tasks = tasks;
     }
 
-    public void setDuration(CustomTimePeriod duration) {
+    public void setDuration(ICustomTimePeriod duration) {
         this.duration = duration;
     }
 
@@ -44,13 +46,46 @@ public class Plan {
         removedTasks.removeTask(task);
     }
 
-    public void removeTaskByID(String taskID)
+    public void removeTask(String taskID)
     {
         if (tasks.getTask(taskID) != null)
         {
             removedTasks.add(tasks.getTask(taskID));
+            tasks.getTask(taskID).setPlanned(false);
+            tasks.getTask(taskID).setDurationPlanned(null);
             tasks.removeTaskByID(taskID);
+
         }
 
+    }
+
+    public void decrementDurationBy(ICustomTimePeriod duration)
+    {
+        this.duration = new CustomTimePeriod(this.duration.minus(duration));
+    }
+
+    public void markTaskCompleted(String taskID)
+    {
+        Task task = tasks.getTask(taskID);
+        decrementDurationBy(task.getDurationPlanned());
+        task.markFullTaskDoneFromPlan();
+        tasks.removeTaskByID(taskID);
+
+    }
+
+    public void markTaskSegmentCompleted(String taskID)
+    {
+        Task task = tasks.getTask(taskID);
+        task.markOneUnitDoneFromPlan();
+        decrementDurationBy(task.getDivisibleUnit());
+    }
+
+    public void clear()
+    {
+        for (Task task : tasks.getTaskList())
+        {
+            task.setDurationPlanned(null);
+            task.setPlanned(false);
+        }
     }
 }

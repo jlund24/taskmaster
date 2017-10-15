@@ -102,4 +102,11 @@
     <string name="time_to_work">How much time do you have to spend today?</string>
     <string name="clear">Clear</string>
     <string name="make_plan">Make Plan</string>
+
+    <string name="uh_oh">Uh-oh</string>
+    <string name="too_many_tasks_message">It looks you have more to do than you allotted time for!</string>
+    <string name="add_time">Add Time</string>
+    <string name="adjust_tasks">Adjust Tasks</string>
+    <string name="task_total_duration">Task Total:</string>
+    <string name="plan_total_duration">Work Time:</string>
 </resources>

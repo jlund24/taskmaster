@@ -19,7 +19,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity android:name=".addEditTaskViews_Presenters.Add_EditTaskActivity">
-
+            windowSoftInputMode="stateAlwaysVisible"
              <!--<intent-filter>-->
              <!--<action android:name="android.intent.action.MAIN"/>-->
 

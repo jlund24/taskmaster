@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,11 +83,13 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
                 }
             }
         });
+        if(titleEditText.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
-        String editingTaskID = getIntent().getStringExtra(EXTRA_TASK_ID_TO_EDIT);
-        if (editingTaskID != null)
-        {
-            presenter.initiateEditMode(editingTaskID);
+            String editingTaskID = getIntent().getStringExtra(EXTRA_TASK_ID_TO_EDIT);
+            if (editingTaskID != null) {
+                presenter.initiateEditMode(editingTaskID);
+            }
         }
     }
 

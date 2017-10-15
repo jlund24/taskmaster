@@ -1,6 +1,9 @@
 package com.student.john.taskmanager2.models;
 
 
+import org.joda.time.Duration;
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -129,6 +132,86 @@ public class TaskList {
     public Task getTask(String taskID)
     {
         return taskMap.get(taskID);
+    }
+
+    public void clear()
+    {
+        taskList.clear();
+        taskMap.clear();
+    }
+
+    public long getTotalDurationOfTasksInMin()
+    {
+        long total = 0;
+        for (Task task : taskList)
+        {
+            if (task.getDuration() != null)
+            {
+                if (task.getDurationLeft() != null)
+                {
+                    total += task.getDurationLeft().getTotalAsMinutes();
+                }
+                else
+                {
+                    total += task.getDuration().getTotalAsMinutes();
+                }
+
+            }
+        }
+
+        return total;
+    }
+
+    public ICustomTimePeriod getTotalDurationOfTasks()
+    {
+        CustomTimePeriod totalDuration = new CustomTimePeriod(new Duration(0));
+        for (Task task : taskList)
+        {
+            if (task.getDuration() != null)
+            {
+                if (task.getDurationLeft() != null)
+                {
+                    totalDuration = new CustomTimePeriod(totalDuration.plus(task.getDurationLeft()));
+                }
+                else
+                {
+                    totalDuration = new CustomTimePeriod(totalDuration.plus(task.getDuration()));
+                }
+
+            }
+        }
+        return totalDuration;
+    }
+
+    public Task getTaskByTitle(String title)
+    {
+        for(Task task : taskList)
+        {
+            if (task.getTitle().equals(title))
+            {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public TaskList getTasksByDueDate(LocalDateTime dueDate)
+    {
+        TaskList tasksWithDueDate = new TaskList();
+        for (Task task : taskList)
+        {
+            if (!task.getCompleted() && task.getDueDateTime() != null)
+            {
+                if (dueDate.getDayOfMonth() == task.getDueDateTime().getDayOfMonth() &&
+                        dueDate.getMonthOfYear() == task.getDueDateTime().getMonthOfYear() &&
+                        dueDate.getYear() == task.getDueDateTime().getYear())
+                {
+                    tasksWithDueDate.add(task);
+                }
+
+            }
+        }
+        return tasksWithDueDate;
     }
 
 

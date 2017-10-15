@@ -8,18 +8,18 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_1;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_10;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_1_5;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_2;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_3;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_4;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_5;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.MIN_15;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.MIN_30;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.MIN_45;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_1;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_10;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_1_5;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_2;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_3;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_4;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_5;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.MIN_15;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.MIN_30;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.MIN_45;
 
-public class DurationConverter {
+public class CustomDurationConverter {
 
     public static final class DurationStringValues {
         public static final String MIN_15 = "15m";
@@ -35,7 +35,7 @@ public class DurationConverter {
 
     }
 
-    public DurationConverter(){}
+    public CustomDurationConverter(){}
 
     public CustomTimePeriod getDurationFromWord(String name)
     {
@@ -62,7 +62,7 @@ public class DurationConverter {
             case HR_10:
                 return new CustomTimePeriod(new Period(10,0,0,0));
             default:
-                System.out.println("DurationConverter got an invalid string: " + name);
+                System.out.println("CustomDurationConverter got an invalid string: " + name);
                 return null;
         }
     }

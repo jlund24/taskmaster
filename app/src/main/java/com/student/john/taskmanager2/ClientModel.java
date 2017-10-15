@@ -6,9 +6,8 @@ import com.student.john.taskmanager2.models.Plan;
 import com.student.john.taskmanager2.models.Task;
 import com.student.john.taskmanager2.models.TaskList;
 
-import org.joda.time.Period;
+import org.joda.time.LocalDateTime;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +15,10 @@ import static com.student.john.taskmanager2.DateConverter.DateStringValues.A_WEE
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.FRIDAY;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TODAY;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TOMORROW;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_1;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_1_5;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.HR_3;
-import static com.student.john.taskmanager2.DurationConverter.DurationStringValues.MIN_30;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_1;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_1_5;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.HR_3;
+import static com.student.john.taskmanager2.CustomDurationConverter.DurationStringValues.MIN_30;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.AFTERNOON;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.EVENING;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MIDNIGHT;
@@ -37,8 +36,7 @@ public class ClientModel {
 
     private static final ClientModel ourInstance = new ClientModel();
     private TaskList allTasks = new TaskList();
-    private TaskList currentlyShownTasks = new TaskList();
-    private Map<String, Task> allTasksMap = new HashMap<>();
+
 
     private Plan currentPlan;
 
@@ -103,7 +101,6 @@ public class ClientModel {
     {
 
         allTasks.add(task);
-        allTasksMap.put(task.getTaskID(), task);
     }
 
     public TaskList getAllTasks()
@@ -113,7 +110,7 @@ public class ClientModel {
 
     public Task getTask(String taskID)
     {
-        return allTasksMap.get(taskID);
+        return allTasks.getTask(taskID);
     }
 
     public void setCurrentPlan(Plan plan)
@@ -123,11 +120,11 @@ public class ClientModel {
 
     public Plan getCurrentPlan()
     {
-        ArrayList<Task> taskList = new ArrayList<>();
-        taskList.add(new Task("hey", new HashMap<String, Object>()));
-        taskList.add(new Task("hi", new HashMap<String, Object>()));
-        TaskList tasks = new TaskList(taskList);
-        currentPlan = new Plan(tasks, new CustomTimePeriod(new Period(3,0,0,0)));
+//        ArrayList<Task> taskList = new ArrayList<>();
+//        taskList.add(new Task("hey", new HashMap<String, Object>()));
+//        taskList.add(new Task("hi", new HashMap<String, Object>()));
+//        TaskList tasks = new TaskList(taskList);
+//        currentPlan = new Plan(tasks, new CustomTimePeriod(new Period(3,0,0,0)));
         return currentPlan;
     }
 
@@ -136,39 +133,91 @@ public class ClientModel {
         currentPlan = new Plan(getTasksForPlan(duration), duration);
     }
 
+    public TaskList getSortableTasks()
+    {
+        TaskList sortableTasks = new TaskList();
+        for (Task task : allTasks.getTaskList())
+        {
+            if (task.getDuration() != null && task.getDueDateTime() != null && !task.getCompleted())
+            {
+                sortableTasks.add(task);
+            }
+        }
+        return sortableTasks;
+    }
+
+
+
     private TaskList getTasksForPlan(CustomTimePeriod duration)
     {
-        allTasks.sortByPoints();
-        System.out.println(allTasks.toString());
 
+        //first get all tasks due today
+        TaskList forToday = allTasks.getTasksByDueDate(new LocalDateTime());
         long minutesToWork = duration.getTotalAsMinutes();
-        TaskList forToday = new TaskList();
 
-        while(minutesToWork >= 15)
+        //if the total duration of tasks due today is already more than how much they said they would work,
+        //just return what we have
+        if (minutesToWork <= forToday.getTotalDurationOfTasksInMin())
         {
-            for (Task task : allTasks.getTaskList())
+            return forToday;
+        }
+
+        minutesToWork -= forToday.getTotalDurationOfTasksInMin();
+
+        TaskList sortableTasks = getSortableTasks();
+        sortableTasks.sortByPoints();
+        //System.out.println(allTasks.toString());
+
+        boolean moreTasks = true;
+        while(minutesToWork >= 15 && !sortableTasks.getTaskList().isEmpty() && moreTasks)
+        {
+            for (Task task : sortableTasks.getTaskList())
             {
-                if (task.getDivisibleUnit().getTotalAsMinutes() != 0 &&
-                        task.getDivisibleUnit().getTotalAsMinutes() <= minutesToWork)
+                if (task.getDivisibleUnit() != null)
                 {
-                    Task taskFragment = new Task(task);
-                    task.reduceDurationOneUnit();
-                    forToday.add(taskFragment);
-                    minutesToWork -= taskFragment.getDuration().getTotalAsMinutes();
-                    break;
+                    if (task.getDivisibleUnit().getTotalAsMinutes() != 0 &&
+                            task.getDivisibleUnit().getTotalAsMinutes() <= minutesToWork &&
+                            task.getDivisibleUnit().getTotalAsMinutes() < task.getDurationLeftUnplanned().getTotalAsMinutes())
+                    {
+
+                        task.markOneDivisibleUnitPlanned();
+                        task.setPlanned(true);
+                        forToday.add(task);
+                        minutesToWork -= task.getDivisibleUnit().getTotalAsMinutes();
+                        break;
+                    }
                 }
-                else if (task.getDuration().getTotalAsMinutes() <= minutesToWork)
+                else if ((int)task.getDurationLeftUnplanned().getTotalAsMinutes() <= (int)minutesToWork + 1)
                 {
                     forToday.add(task);
-                    minutesToWork -= task.getDuration().getTotalAsMinutes();
-                    allTasks.removeTask(task);
+                    task.setPlanned(true);
+                    task.setDurationPlanned(task.getDurationLeftUnplanned());
+                    minutesToWork -= task.getDurationLeftUnplanned().getTotalAsMinutes();
+                    sortableTasks.removeTask(task);
+                    break;
+                }
+                else if (task == sortableTasks.getTaskList().get(sortableTasks.getTaskList().size()-1))
+                {
+                    moreTasks = false;
                     break;
                 }
             }
-            allTasks.sortByPoints();
+            sortableTasks.sortByPoints();
         }
+
         return forToday;
     }
+
+
+    public void markTaskCompleted(String taskID)
+    {
+        allTasks.getTask(taskID).setCompleted(true);
+    }
+
+//    public void markTaskUnCompleted(String taskID)
+//    {
+//        allTasks.getTask(taskID).setCompleted(false);
+//    }
 
 
 }
