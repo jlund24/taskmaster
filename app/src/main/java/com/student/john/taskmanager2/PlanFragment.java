@@ -214,6 +214,11 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         editWorkingHoursButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_edit_black_24dp));
     }
 
+    public void removeTaskFromList(int position)
+    {
+        planTaskListAdapter.removeItem(position);
+    }
+
     public void makeToast(String text)
     {
         Toast toast = Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT);
@@ -275,7 +280,6 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         TextView taskTitle;
         TextView dueDateTextView;
         TextView durationTextView;
-        TextView separatorTextView;
 
         public TaskHolder(View itemView)
         {
@@ -285,7 +289,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
             taskTitle = itemView.findViewById(R.id.plan_list_item_title);
             dueDateTextView = itemView.findViewById(R.id.plan_list_item_dueDate);
             durationTextView = itemView.findViewById(R.id.plan_list_item_duration);
-            separatorTextView = itemView.findViewById(R.id.plan_list_item_separator);
+
         }
 
         public void bindTask(Task newTask)
@@ -297,7 +301,6 @@ public class PlanFragment extends android.support.v4.app.Fragment {
             {
                 dueDateTextView.setText(dueDateString);
                 dueDateTextView.setVisibility(VISIBLE);
-                separatorTextView.setVisibility(VISIBLE);
                 durationTextView.setText(durationString);
                 durationTextView.setVisibility(VISIBLE);
             }
@@ -305,21 +308,18 @@ public class PlanFragment extends android.support.v4.app.Fragment {
             {
                 dueDateTextView.setText(dueDateString);
                 dueDateTextView.setVisibility(VISIBLE);
-                separatorTextView.setVisibility(GONE);
                 durationTextView.setVisibility(GONE);
             }
             else if (durationString != null)
             {
                 durationTextView.setText(durationString);
                 durationTextView.setVisibility(VISIBLE);
-                separatorTextView.setVisibility(GONE);
                 dueDateTextView.setVisibility(GONE);
             }
             else
             {
                 dueDateTextView.setText(R.string.no_info);
                 dueDateTextView.setVisibility(VISIBLE);
-                separatorTextView.setVisibility(View.INVISIBLE);
                 durationTextView.setVisibility(View.INVISIBLE);
             }
 
@@ -347,14 +347,9 @@ public class PlanFragment extends android.support.v4.app.Fragment {
                 int position = viewHolder.getAdapterPosition();
 
                 if (direction == ItemTouchHelper.LEFT){
-                    planTaskListAdapter.removeItem(position);
+                    presenter.onPlanItemSwipedLeft(position);
                 } else {
-                    makeToast("hey I got swiped");
-//                    removeView();
-//                    edit_position = position;
-//                    alertDialog.setTitle("Edit Country");
-//                    et_country.setText(countries.get(position));
-//                    alertDialog.show();
+                    presenter.onPlanItemSwipedRight(position);
                 }
             }
 
@@ -380,7 +375,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
                         p.setColor(ContextCompat.getColor(getActivity(), R.color.red));
                         RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
                         c.drawRect(background,p);
-                        icon = drawableToBitmap(R.drawable.ic_delete_white_24dp);
+                        icon = drawableToBitmap(R.drawable.ic_remove_circle_outline_white_24dp);
                         //icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete_white_24dp);
                         RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
                         c.drawBitmap(icon,null,icon_dest,p);

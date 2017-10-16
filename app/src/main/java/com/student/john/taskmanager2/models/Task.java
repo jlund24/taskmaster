@@ -346,7 +346,7 @@ public class Task implements ITask, Comparable {
         this.durationPlanned = new CustomTimePeriod(this.durationPlanned.plus(this.divisibleUnit));
     }
 
-    public void markOnePlannedUnitDone()
+   private void markOnePlannedUnitDone()
     {
         if (this.durationPlanned == null) {
             Log.d("Task","no durationPlanned when markOnePlannedUnitDone() called");

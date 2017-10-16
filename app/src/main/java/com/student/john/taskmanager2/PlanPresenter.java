@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 
 
 import com.student.john.taskmanager2.models.CustomTimePeriod;
+import com.student.john.taskmanager2.models.Task;
 
 import org.joda.time.Duration;
 
@@ -108,6 +109,50 @@ public class PlanPresenter {
         planFragment.setWorkingTime( converter.getWordFromDuration(model.getCurrentPlan().getDuration()) );
         //change color of text back to normal on plan list
         planFragment.clearTooManyTasksTheme();
+    }
+
+    public void onPlanItemSwipedLeft(int position)
+    {
+        Task taskSwiped = model.getCurrentPlan().getTaskList().getTaskList().get(position);
+        this.removeTaskFromPlan(taskSwiped, position);
+
+        //check Plan status
+        //model.getCurrentPlan().getStatus();
+        //reload Plan page (to make sure tasks are removed, time is update, red text is cleared, etc.
+    }
+
+    private void removeTaskFromPlan(Task taskToRemove, int position)
+    {
+        model.getCurrentPlan().removeTask(taskToRemove.getTaskID());
+        //remove from recycler view
+        planFragment.removeTaskFromList(position);
+    }
+
+    public void onPlanItemSwipedRight(int position)
+    {
+        Task taskSwiped = model.getCurrentPlan().getTaskList().getTaskList().get(position);
+        planFragment.removeTaskFromList(position);
+        //if this is a task with segments and they're not 0 and there's at least 1 full segment left
+        if (taskSwiped.getDivisibleUnit() != null && taskSwiped.getDivisibleUnit().getTotalAsMinutes() != 0 &&
+                taskSwiped.getDivisibleUnit().getTotalAsMinutes() > taskSwiped.getDurationPlanned().getTotalAsMinutes())
+        {
+            //show dialog to choose between 1 segment or full task completed
+        }
+        else
+        {
+            markFullTaskCompleted(taskSwiped);
+        }
+
+    }
+
+    private void markFullTaskCompleted(Task task)
+    {
+        model.getCurrentPlan().markTaskCompleted(task.getTaskID());
+    }
+
+    private void markTaskSegmentCompleted()
+    {
+
     }
 }
 

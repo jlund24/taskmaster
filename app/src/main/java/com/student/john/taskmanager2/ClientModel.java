@@ -138,7 +138,7 @@ public class ClientModel {
         TaskList sortableTasks = new TaskList();
         for (Task task : allTasks.getTaskList())
         {
-            if (task.getDuration() != null && task.getDueDateTime() != null && !task.getCompleted())
+            if (task.getDuration() != null && task.getDueDateTime() != null && !task.getCompleted() && !task.getPlanned())
             {
                 sortableTasks.add(task);
             }
@@ -153,6 +153,11 @@ public class ClientModel {
 
         //first get all tasks due today
         TaskList forToday = allTasks.getTasksByDueDate(new LocalDateTime());
+        for (Task task : forToday.getTaskList())
+        {
+            task.setPlanned(true);
+            task.setDurationPlanned(task.getDurationLeftUnplanned());
+        }
         long minutesToWork = duration.getTotalAsMinutes();
 
         //if the total duration of tasks due today is already more than how much they said they would work,
@@ -209,15 +214,6 @@ public class ClientModel {
     }
 
 
-    public void markTaskCompleted(String taskID)
-    {
-        allTasks.getTask(taskID).setCompleted(true);
-    }
-
-//    public void markTaskUnCompleted(String taskID)
-//    {
-//        allTasks.getTask(taskID).setCompleted(false);
-//    }
 
 
 }
