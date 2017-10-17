@@ -14,24 +14,35 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.student.john.taskmanager2.addEditTaskViews_Presenters.Add_EditTaskActivity;
 import com.student.john.taskmanager2.models.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -52,9 +63,15 @@ public class PlanFragment extends android.support.v4.app.Fragment {
     private LinearLayout planListLayout;
     private LinearLayout workingHoursLayout;
     private LinearLayout addTasksLayout;
+    private LinearLayout createPlan1Layout;
     private TextView workingHoursTitle;
     private ImageButton editWorkingHoursButton;
     private Button addTasksButton;
+    private AutoCompleteTextView planDurationInput;
+    private RecyclerView autoCompleteRecyclerView;
+    private SuggestionAdapter autoCompleteAdapter;
+    private ImageView inputAcceptedIcon;
+    private boolean accepted = false;
 
     private Paint p = new Paint();
 
@@ -64,6 +81,13 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         // Required empty public constructor
     }
 
+    public void hideKeyboard(View view) {
+        InputMethodManager inputMethodManager =(InputMethodManager) getActivity().getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if(inputMethodManager.isAcceptingText()) { // verify if the soft keyboard is open
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,8 +98,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         planTaskList = v.findViewById(R.id.plan_recyclerView);
         planTaskList.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
         initSwipe();
-        if(planTaskListAdapter == null)
-        {
+        if (planTaskListAdapter == null) {
 
             planTaskListAdapter = new TaskAdapter(new ArrayList<Task>());
             planTaskList.setAdapter(planTaskListAdapter);
@@ -85,9 +108,59 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         hoursSpinner = v.findViewById(R.id.create_plan_hours_spinner);
         minutesSpinner = v.findViewById(R.id.create_plan_minutes_spinner);
 
-        createPlanLayout = v.findViewById(R.id.create_plan_layout);
+        createPlanLayout = v.findViewById(R.id.create_plan_1_layout);
         planListLayout = v.findViewById(R.id.plan_list_layout);
         addTasksLayout = v.findViewById(R.id.add_more_tasks_layout);
+
+        planDurationInput = v.findViewById(R.id.multiAutoCompleteTextView2);
+        autoCompleteRecyclerView = v.findViewById(R.id.auto_complete_recyclerView);
+        autoCompleteRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
+        if (autoCompleteAdapter == null)
+        {
+            autoCompleteAdapter = new SuggestionAdapter(ClientModel.getInstance().getSuggestionsContaining(""));
+            autoCompleteRecyclerView.setAdapter(autoCompleteAdapter);
+            autoCompleteAdapter.notifyDataSetChanged();
+        }
+
+        planDurationInput = v.findViewById(R.id.multiAutoCompleteTextView2);
+        planDurationInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                presenter.onPlanDurationInputChanged(editable.toString());
+            }
+        });
+
+        planDurationInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+
+                // Perform action on key press
+                if (accepted)
+                {
+                    presenter.onAutoCompleteSuggestionClicked(planDurationInput.getText().toString());
+                    hideKeyboard(v);
+                }
+                else
+                {
+                    makeToast("Please enter a valid duration string. (e.g. 1h 30m, 30m, or 5h)");
+                }
+                return true;
+
+            }
+        });
+
+        inputAcceptedIcon = v.findViewById(R.id.input_accepted_icon);
 
         saveButton = v.findViewById(R.id.make_plan_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -219,6 +292,25 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         workingHoursTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.android_default));
         workingHoursTitle.setTextColor(ContextCompat.getColor(getActivity(), R.color.android_default));
         editWorkingHoursButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_edit_black_24dp));
+    }
+
+    public void setTextAccepted(Boolean accepted)
+    {
+        if (accepted)
+        {
+            inputAcceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_green_24dp));
+
+        }
+        else
+        {
+            inputAcceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_gray_24dp));
+        }
+        setEnterKeyEnabled(accepted);
+    }
+
+    public void setEnterKeyEnabled(Boolean enabled)
+    {
+        this.accepted = enabled;
     }
 
     public void setAddTasksLayoutVisible(boolean visible)
@@ -420,6 +512,81 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         drawable.draw(canvas);
 
         return bitmap;
+    }
+
+    public void updateSuggestions(List<String> suggestions)
+    {
+        List<String> stop = suggestions;
+        autoCompleteAdapter = new SuggestionAdapter(suggestions);
+        autoCompleteRecyclerView.setAdapter(autoCompleteAdapter);
+        autoCompleteAdapter.notifyDataSetChanged();
+
+    }
+
+    private class SuggestionAdapter extends RecyclerView.Adapter<PlanFragment.SuggestionHolder> {
+        private List<String> suggestions;
+
+        public SuggestionAdapter(List<String> suggestions)
+        {
+            this.suggestions = suggestions;
+        }
+
+        @Override
+        public PlanFragment.SuggestionHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
+            LayoutInflater layoutInflater = LayoutInflater.from(PlanFragment.this.getContext());
+            View view = layoutInflater.inflate(R.layout.autocomplete_list_item, parent, false);
+            return new PlanFragment.SuggestionHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(PlanFragment.SuggestionHolder holder, int position)
+        {
+            String suggestion = suggestions.get(position);
+            holder.bindSuggestion(suggestion);
+        }
+        @Override
+        public int getItemCount()
+        {
+            return suggestions.size();
+        }
+
+
+
+        public void addItem(String suggestion) {
+            suggestions.add(suggestion);
+            notifyItemInserted(suggestions.size());
+        }
+
+    }
+
+    private class SuggestionHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
+        String suggestion;
+        TextView suggestionTextView;
+
+        public SuggestionHolder(View itemView)
+        {
+            super(itemView);
+
+            itemView.setOnClickListener(this);
+            suggestionTextView = itemView.findViewById(R.id.suggestion_textView);
+
+        }
+
+        public void bindSuggestion(String newSuggestion)
+        {
+            suggestionTextView.setText(newSuggestion);
+            suggestion = newSuggestion;
+        }
+
+
+
+        @Override
+        public void onClick(View v) {
+            presenter.onAutoCompleteSuggestionClicked(suggestion);
+            hideKeyboard(v);
+        }
     }
 
 

@@ -93,4 +93,32 @@ public class CustomDurationConverter {
         return duration.getPeriodObject().toString(fmt);
 
     }
+
+    public CustomTimePeriod getDurationFromString(String input)
+    {
+        PeriodFormatter formatter = new PeriodFormatterBuilder()
+                .appendHours().appendSuffix("h").appendSeparatorIfFieldsAfter(" ")
+                .appendMinutes().appendSuffix("m") .toFormatter();
+
+        try
+        {
+            return new CustomTimePeriod(formatter.parsePeriod(input));
+        }
+        catch(IllegalArgumentException e)
+        {
+
+        }
+        try
+        {
+            formatter = new PeriodFormatterBuilder()
+                    .appendMinutes().appendSuffix("m").toFormatter();
+            return new CustomTimePeriod(formatter.parsePeriod(input));
+        }
+        catch(IllegalArgumentException e)
+        {
+
+        }
+        return null;
+
+    }
 }

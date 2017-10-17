@@ -191,4 +191,5 @@ public class Add_EditTaskActivity extends AppCompatActivity implements IAdd_Edit
         InputMethodManager inputMethodManager =(InputMethodManager)getSystemService(Add_EditTaskActivity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
 }

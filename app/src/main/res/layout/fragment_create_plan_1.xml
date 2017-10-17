@@ -29,5 +29,7 @@
         android:id="@+id/multiAutoCompleteTextView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/plan_how_long"/>
+        android:inputType="textVisiblePassword"
+        android:hint="@string/plan_how_long"
+        />
 </LinearLayout>

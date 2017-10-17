@@ -9,7 +9,9 @@ import com.student.john.taskmanager2.models.TaskList;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.A_WEEK;
@@ -44,6 +46,7 @@ public class ClientModel {
     private Map<ButtonEnum, String> buttonToContentMap = new HashMap<>();
     private Map<String, ButtonEnum> contentToButtonMap = new HashMap<>();
 
+    private List<String> durationSuggestions = new ArrayList<>();
 
     //SINGLETON FUNCTIONS------------------------
 
@@ -54,6 +57,7 @@ public class ClientModel {
     private ClientModel() {
 
         setDefaultButtonMaps();
+        setUpDurationSuggestions();
         Task task = new Task();
         task.setTitle("prototype");
         task.setDueDateTime(new LocalDateTime(2017,10,17,10,0));
@@ -111,6 +115,52 @@ public class ClientModel {
         contentToButtonMap.put(HR_1_5, ButtonEnum.DUR_BOTTOM_LEFT);
         contentToButtonMap.put(HR_3, ButtonEnum.DUR_BOTTOM_RIGHT);
 
+    }
+
+    private void setUpDurationSuggestions()
+    {
+        durationSuggestions.add("15m");
+        durationSuggestions.add("30m");
+        durationSuggestions.add("1h");
+        durationSuggestions.add("1h 30m");
+        durationSuggestions.add("2h");
+        durationSuggestions.add("3h");
+        durationSuggestions.add("4h");
+        durationSuggestions.add("5h");
+        durationSuggestions.add("6h");
+        durationSuggestions.add("7h");
+        durationSuggestions.add("8h");
+        durationSuggestions.add("9h");
+        durationSuggestions.add("10h");
+        durationSuggestions.add("11h");
+        durationSuggestions.add("12h");
+        durationSuggestions.add("13h");
+        durationSuggestions.add("14h");
+        durationSuggestions.add("15h");
+        durationSuggestions.add("16h");
+        durationSuggestions.add("17h");
+        durationSuggestions.add("18h");
+        durationSuggestions.add("19h");
+        durationSuggestions.add("20h");
+        durationSuggestions.add("45m");
+    }
+
+    public List<String> getSuggestionsContaining(String s)
+    {
+        ArrayList<String> suggestions = new ArrayList<>();
+        if (s.equals(""))
+        {
+            return durationSuggestions;
+        }
+
+        for (String suggestion : durationSuggestions)
+        {
+            if (suggestion.contains(s))
+            {
+                suggestions.add(suggestion);
+            }
+        }
+        return suggestions;
     }
 
     public String getContentFromButton(ButtonEnum button)

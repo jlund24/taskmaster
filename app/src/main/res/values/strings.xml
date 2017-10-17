@@ -117,5 +117,6 @@
     <string name="segment">Segment</string>
     <string name="planned">planned</string>
     <string name="add_task_explanation">Select a task below to add</string>
-    <string name="plan_how_long">How much time do you have today?</string>
+    <string name="plan_how_long">How much time do you have?</string>
+    <string name="title_activity_add__edit__task_1">Add_Edit_Task_1</string>
 </resources>

@@ -65,12 +65,58 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/create_plan_1_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <AutoCompleteTextView
+                android:layout_weight="0.9"
+                android:id="@+id/multiAutoCompleteTextView2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/plan_how_long"
+                android:maxLines="1"
+                android:inputType="textShortMessage"
+                android:layout_marginLeft="5dp"
+                />
+
+            <ImageView
+                android:id="@+id/input_accepted_icon"
+                android:layout_weight="0.1"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_check_circle_gray_24dp"/>
+
+        </LinearLayout>
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/auto_complete_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/plan_list_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/working_time_layout"

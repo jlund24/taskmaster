@@ -13,9 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.student.john.taskmanager2.dummy.DummyContent;
-import com.student.john.taskmanager2.dummy.DummyContent.DummyItem;
 import com.student.john.taskmanager2.models.Task;
 import com.student.john.taskmanager2.models.TaskList;
 

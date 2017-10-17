@@ -213,6 +213,7 @@ public class PlanPresenter {
     {
         model.getCurrentPlan().markTaskCompleted(task.getTaskID());
         swipedTask = null;
+        updatePlanFragment();
     }
 
     private void markTaskSegmentCompleted(Task task)
@@ -251,6 +252,46 @@ public class PlanPresenter {
     {
         dialog.updateTasks(model.getCurrentPlan().getPossibleTasksToFillIn().getTaskList());
     }
+
+    public void onAutoCompleteSuggestionClicked(String suggestion)
+    {
+        if (suggestion != null)
+        {
+            //generate plan
+            CustomTimePeriod duration = converter.getDurationFromString(suggestion);
+            if (duration != null)
+            {
+                ClientModel.getInstance().generatePlan(duration);
+                updatePlanFragment();
+
+            }
+            else
+            {
+                planFragment.makeToast("You must provide a valid duration to make a plan.");
+            }
+
+
+        }
+        else
+        {
+            planFragment.makeToast("You must provide a valid duration to make a plan.");
+        }
+    }
+
+    public void onPlanDurationInputChanged(String input)
+    {
+        planFragment.updateSuggestions(model.getSuggestionsContaining(input));
+        if (converter.getDurationFromString(input) != null)
+        {
+            planFragment.setTextAccepted(true);
+        }
+        else
+        {
+            planFragment.setTextAccepted(false);
+        }
+    }
+
+
 
 }
 

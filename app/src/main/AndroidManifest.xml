@@ -20,16 +20,26 @@
         </activity>
         <activity android:name=".addEditTaskViews_Presenters.Add_EditTaskActivity">
             windowSoftInputMode="stateAlwaysVisible"
-             <!--<intent-filter>-->
-             <!--<action android:name="android.intent.action.MAIN"/>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
 
 
-             <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-             <!--</intent-filter>-->
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
+        </activity>
+        <activity
+            android:name=".Add_Edit_Task_1"
+            android:label="@string/title_activity_add__edit__task_1"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
