@@ -2,12 +2,16 @@ package com.student.john.taskmanager2;
 
 
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 
 import com.student.john.taskmanager2.models.CustomTimePeriod;
 import com.student.john.taskmanager2.models.Task;
 
-import org.joda.time.Duration;
+import static com.student.john.taskmanager2.models.Plan.PlanState.EMPTY;
+import static com.student.john.taskmanager2.models.Plan.PlanState.FULL;
+import static com.student.john.taskmanager2.models.Plan.PlanState.OVERFULL;
+import static com.student.john.taskmanager2.models.Plan.PlanState.UNDERFULL;
 
 
 public class PlanPresenter {
@@ -16,15 +20,18 @@ public class PlanPresenter {
     private NotEnoughTimeDialogFragment notEnoughTimeDialogFragment;
     private ClientModel model = ClientModel.getInstance();
     private CustomDurationConverter converter = new CustomDurationConverter();
+    private Task swipedTask = null;
 
     public final String NOT_ENOUGH_TIME_DIALOG = "NotEnoughTimeDialog";
+    public final String COMPLETION_DIALOG = "CompletionDialog";
+    public final String ADD_TASK_DIALOG = "AddTaskDialog";
 
     public PlanPresenter(PlanFragment planFragment)
     {
         this.planFragment = planFragment;
     }
 
-    public void setUpPlanFragment()
+    public void updatePlanFragment()
     {
         if (model.getCurrentPlan() == null)
         {
@@ -33,23 +40,74 @@ public class PlanPresenter {
         }
         else
         {
-            //set layout to be plan list mode
-            planFragment.setFragmentToPlanListLayout();
-            planFragment.updateTasks(model.getCurrentPlan().getTaskList().getTaskList());
-            planFragment.setWorkingTime(converter.getWordFromDuration(model.getCurrentPlan().getDuration()));
-            if (model.getCurrentPlan().getDuration().getTotalAsMinutes() < model.getCurrentPlan().getTaskList().getTotalDurationOfTasksInMin())
+            switch (model.getCurrentPlan().getStatus())
             {
-                //we have too many tasks, need to show dialog and mark everything red
-                FragmentManager manager = planFragment.getActivity().getSupportFragmentManager();
-                notEnoughTimeDialogFragment = NotEnoughTimeDialogFragment.newInstance();
-                notEnoughTimeDialogFragment.show(manager,NOT_ENOUGH_TIME_DIALOG);
-                notEnoughTimeDialogFragment.setPresenter(this);
-
-                //mark stuff red
-                planFragment.setTooManyTasksTheme();
+                case EMPTY:
+                    onPlanEmpty();
+                    break;
+                case OVERFULL:
+                    onPlanOverfull();
+                    break;
+                case UNDERFULL:
+                    onPlanUnderfull();
+                    break;
+                case FULL:
+                    onPlanFull();
+                    break;
+                default:
+                    Log.d("PlanPresenter", "Status from plan was not recognized");
             }
+
         }
 
+    }
+
+    private void onPlanEmpty()
+    {
+        planFragment.setFragmentToPlanListLayout();
+        planFragment.updateTasks(model.getCurrentPlan().getTaskList().getTaskList());
+        planFragment.setWorkingTime(converter.getWordFromDuration(model.getCurrentPlan().getDuration()));
+        planFragment.clearTooManyTasksTheme();
+
+        //show text view saying the plan's empty, either add more time or some new tasks to the list
+        //and try making another plan
+        planFragment.setAddTasksLayoutVisible(true);
+
+    }
+
+    private void onPlanOverfull()
+    {
+        planFragment.setFragmentToPlanListLayout();
+        planFragment.updateTasks(model.getCurrentPlan().getTaskList().getTaskList());
+        planFragment.setWorkingTime(converter.getWordFromDuration(model.getCurrentPlan().getDuration()));
+
+        //we have too many tasks, need to show dialog and mark everything red
+        FragmentManager manager = planFragment.getActivity().getSupportFragmentManager();
+        notEnoughTimeDialogFragment = NotEnoughTimeDialogFragment.newInstance();
+        notEnoughTimeDialogFragment.show(manager,NOT_ENOUGH_TIME_DIALOG);
+        notEnoughTimeDialogFragment.setPresenter(this);
+
+        //mark stuff red
+        planFragment.setTooManyTasksTheme();
+        planFragment.setAddTasksLayoutVisible(false);
+    }
+
+    private void onPlanUnderfull()
+    {
+        planFragment.setFragmentToPlanListLayout();
+        planFragment.updateTasks(model.getCurrentPlan().getTaskList().getTaskList());
+        planFragment.setWorkingTime(converter.getWordFromDuration(model.getCurrentPlan().getDuration()));
+        planFragment.clearTooManyTasksTheme();
+
+        planFragment.setAddTasksLayoutVisible(true);
+    }
+
+    private void onPlanFull()
+    {
+        planFragment.setFragmentToPlanListLayout();
+        planFragment.updateTasks(model.getCurrentPlan().getTaskList().getTaskList());
+        planFragment.setWorkingTime(converter.getWordFromDuration(model.getCurrentPlan().getDuration()));
+        planFragment.setAddTasksLayoutVisible(false);
     }
 
     public void setUpNotEnoughTimeDialog()
@@ -71,7 +129,7 @@ public class PlanPresenter {
             if (duration != null)
             {
                 ClientModel.getInstance().generatePlan(duration);
-                setUpPlanFragment();
+                updatePlanFragment();
 
             }
             else
@@ -114,46 +172,86 @@ public class PlanPresenter {
     public void onPlanItemSwipedLeft(int position)
     {
         Task taskSwiped = model.getCurrentPlan().getTaskList().getTaskList().get(position);
+
         this.removeTaskFromPlan(taskSwiped, position);
 
-        //check Plan status
-        //model.getCurrentPlan().getStatus();
-        //reload Plan page (to make sure tasks are removed, time is update, red text is cleared, etc.
+        updatePlanFragment();
+
+
     }
 
     private void removeTaskFromPlan(Task taskToRemove, int position)
     {
         model.getCurrentPlan().removeTask(taskToRemove.getTaskID());
         //remove from recycler view
-        planFragment.removeTaskFromList(position);
+        //planFragment.removeTaskFromList(position);
     }
 
     public void onPlanItemSwipedRight(int position)
     {
         Task taskSwiped = model.getCurrentPlan().getTaskList().getTaskList().get(position);
-        planFragment.removeTaskFromList(position);
+        //planFragment.removeTaskFromList(position);
         //if this is a task with segments and they're not 0 and there's at least 1 full segment left
         if (taskSwiped.getDivisibleUnit() != null && taskSwiped.getDivisibleUnit().getTotalAsMinutes() != 0 &&
-                taskSwiped.getDivisibleUnit().getTotalAsMinutes() > taskSwiped.getDurationPlanned().getTotalAsMinutes())
+                taskSwiped.getDivisibleUnit().getTotalAsMinutes() < taskSwiped.getDurationPlanned().getTotalAsMinutes())
         {
             //show dialog to choose between 1 segment or full task completed
+            FragmentManager manager = planFragment.getActivity().getSupportFragmentManager();
+            CompletionDialogFragment fragment = CompletionDialogFragment.newInstance();
+            fragment.show(manager,COMPLETION_DIALOG);
+            fragment.setPresenter(this);
+            this.swipedTask = taskSwiped;
         }
         else
         {
             markFullTaskCompleted(taskSwiped);
         }
-
+        updatePlanFragment();
     }
 
     private void markFullTaskCompleted(Task task)
     {
         model.getCurrentPlan().markTaskCompleted(task.getTaskID());
+        swipedTask = null;
     }
 
-    private void markTaskSegmentCompleted()
+    private void markTaskSegmentCompleted(Task task)
     {
-
+        model.getCurrentPlan().markTaskSegmentCompleted(task.getTaskID());
+        swipedTask = null;
+        updatePlanFragment();
     }
+
+    public void onAddTasksButtonClicked()
+    {
+        FragmentManager manager = planFragment.getActivity().getSupportFragmentManager();
+        AddTaskToPlanDialogFragment fragment = AddTaskToPlanDialogFragment.newInstance();
+        fragment.show(manager,ADD_TASK_DIALOG);
+        fragment.setPresenter(this);
+    }
+
+    public void onFullTimeButtonClicked()
+    {
+        markFullTaskCompleted(swipedTask);
+    }
+
+    public void onSegmentButtonClicked()
+    {
+        markTaskSegmentCompleted(swipedTask);
+    }
+
+    public void onTaskToAddClicked(String taskID)
+    {
+        Task taskToAdd = model.getTask(taskID);
+        model.getCurrentPlan().addTaskToPlan(taskToAdd);
+        updatePlanFragment();
+    }
+
+    public void setUpAddTaskDialog(AddTaskToPlanDialogFragment dialog)
+    {
+        dialog.updateTasks(model.getCurrentPlan().getPossibleTasksToFillIn().getTaskList());
+    }
+
 }
 
 

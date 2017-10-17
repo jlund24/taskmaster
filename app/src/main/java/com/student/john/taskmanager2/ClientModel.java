@@ -7,6 +7,7 @@ import com.student.john.taskmanager2.models.Task;
 import com.student.john.taskmanager2.models.TaskList;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,32 @@ public class ClientModel {
     }
 
     private ClientModel() {
+
         setDefaultButtonMaps();
+        Task task = new Task();
+        task.setTitle("prototype");
+        task.setDueDateTime(new LocalDateTime(2017,10,17,10,0));
+        task.setDuration(new CustomTimePeriod(new Period(5,0,0,0)));
+        task.setDivisibleUnit(new CustomTimePeriod(new Period(1,0,0,0)));
+        allTasks.add(task);
+
+        task = new Task();
+        task.setTitle("study for 252");
+        task.setDueDateTime(new LocalDateTime(2017,10,18,16,0));
+        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
+        allTasks.add(task);
+
+        task = new Task();
+        task.setTitle("read BoM");
+        task.setDueDateTime(new LocalDateTime(2017,10,16,23,59));
+        task.setDuration(new CustomTimePeriod(new Period(0,30,0,0)));
+        allTasks.add(task);
+
+        task = new Task();
+        task.setTitle("4.1 online");
+        task.setDueDateTime(new LocalDateTime(2017,10,17,23,59));
+        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
+        allTasks.add(task);
     }
 
     //-------------------------------------------
@@ -138,7 +164,8 @@ public class ClientModel {
         TaskList sortableTasks = new TaskList();
         for (Task task : allTasks.getTaskList())
         {
-            if (task.getDuration() != null && task.getDueDateTime() != null && !task.getCompleted() && !task.getPlanned())
+            if (task.getDuration() != null && task.getDueDateTime() != null && !task.getCompleted() &&
+                    task.getDurationLeftUnplanned().getTotalAsMinutes() > 0)
             {
                 sortableTasks.add(task);
             }
@@ -146,7 +173,10 @@ public class ClientModel {
         return sortableTasks;
     }
 
-
+    public TaskList getTasksDueToday()
+    {
+        return allTasks.getTasksByDueDate(new LocalDateTime());
+    }
 
     private TaskList getTasksForPlan(CustomTimePeriod duration)
     {
@@ -162,12 +192,12 @@ public class ClientModel {
 
         //if the total duration of tasks due today is already more than how much they said they would work,
         //just return what we have
-        if (minutesToWork <= forToday.getTotalDurationOfTasksInMin())
+        if (minutesToWork <= forToday.getTotalDurationPlannedOfTasksInMin())
         {
             return forToday;
         }
 
-        minutesToWork -= forToday.getTotalDurationOfTasksInMin();
+        minutesToWork -= forToday.getTotalDurationPlannedOfTasksInMin();
 
         TaskList sortableTasks = getSortableTasks();
         sortableTasks.sortByPoints();
@@ -213,7 +243,20 @@ public class ClientModel {
         return forToday;
     }
 
+    public void setAllTasks(TaskList allTasks) {
+        this.allTasks = allTasks;
+    }
 
-
-
+    public TaskList getVisibleTasks()
+    {
+        TaskList visibleTasks = new TaskList();
+        for (Task task : allTasks.getTaskList())
+        {
+            if (!task.getCompleted())
+            {
+                visibleTasks.add(task);
+            }
+        }
+        return visibleTasks;
+    }
 }

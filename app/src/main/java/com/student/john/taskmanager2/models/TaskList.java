@@ -140,20 +140,20 @@ public class TaskList {
         taskMap.clear();
     }
 
-    public long getTotalDurationOfTasksInMin()
+    public long getTotalDurationPlannedOfTasksInMin()
     {
         long total = 0;
         for (Task task : taskList)
         {
             if (task.getDuration() != null)
             {
-                if (task.getDurationLeft() != null)
+                if (task.getDurationPlanned() != null)
                 {
-                    total += task.getDurationLeft().getTotalAsMinutes();
+                    total += task.getDurationPlanned().getTotalAsMinutes();
                 }
                 else
                 {
-                    total += task.getDuration().getTotalAsMinutes();
+                    total += task.getDurationLeft().getTotalAsMinutes();
                 }
 
             }
@@ -200,7 +200,7 @@ public class TaskList {
         TaskList tasksWithDueDate = new TaskList();
         for (Task task : taskList)
         {
-            if (!task.getCompleted() && task.getDueDateTime() != null)
+            if (!task.getCompleted() && task.getDueDateTime() != null && task.getDuration() != null)
             {
                 if (dueDate.getDayOfMonth() == task.getDueDateTime().getDayOfMonth() &&
                         dueDate.getMonthOfYear() == task.getDueDateTime().getMonthOfYear() &&

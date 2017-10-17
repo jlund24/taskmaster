@@ -74,7 +74,6 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -103,6 +102,8 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
         Intent intent = Add_EditTaskActivity.newIntent(context, item.getTaskID());
         startActivity(intent);
     }
+
+
 
 
 
@@ -153,4 +154,6 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
     {
         mViewPager.setCurrentItem(1);
     }
+
+
 }

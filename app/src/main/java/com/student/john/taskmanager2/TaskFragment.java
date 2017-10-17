@@ -72,7 +72,7 @@ public class TaskFragment extends Fragment {
 //        List<Task> tasks = new ArrayList<>();
 //        tasks.add(new Task("hey there", new HashMap<String, Object>()));
 //        tasks.add(new Task("task 2", new HashMap<String, Object>()));
-        TaskList tasks = ClientModel.getInstance().getAllTasks();
+        TaskList tasks = ClientModel.getInstance().getVisibleTasks();
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -88,7 +88,7 @@ public class TaskFragment extends Fragment {
     private void updateUI()
     {
         //get tasks
-        TaskList taskList = ClientModel.getInstance().getAllTasks();
+        TaskList taskList = ClientModel.getInstance().getVisibleTasks();
         List<Task> tasks = taskList.getTaskList();
 
         //use adapter to update
@@ -106,9 +106,11 @@ public class TaskFragment extends Fragment {
         super.onResume();
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
+        updateUI();
         inflater.inflate(R.menu.menu_task_list,menu);
         //super.onCreateOptionsMenu(menu, inflater);
     }

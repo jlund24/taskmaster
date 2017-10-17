@@ -253,6 +253,16 @@ public class Task implements ITask, Comparable {
         return null;
     }
 
+    public String getDurationPlannedString()
+    {
+        if (durationPlanned != null)
+        {
+            CustomDurationConverter converter = new CustomDurationConverter();
+            return converter.getWordFromDuration(this.durationPlanned);
+        }
+        return null;
+    }
+
     public String getDueTimeString()
     {
         if (dueDateTime != null)
@@ -277,6 +287,10 @@ public class Task implements ITask, Comparable {
     }
 
     public ICustomTimePeriod getDurationPlanned() {
+        if (durationPlanned == null)
+        {
+            durationPlanned = new CustomTimePeriod(new Duration(0));
+        }
         return durationPlanned;
     }
 
@@ -339,11 +353,15 @@ public class Task implements ITask, Comparable {
         }
         if (this.divisibleUnit == null)
         {
-            Log.d("Task","no divisible unit when markOneDivisbleUnitPlanned() called");
+            Log.d("Task","no divisible unit when markOneDivisibleUnitPlanned() called");
             return;
         }
 
         this.durationPlanned = new CustomTimePeriod(this.durationPlanned.plus(this.divisibleUnit));
+        if (this.durationPlanned.getTotalAsMinutes() > getDurationLeft().getTotalAsMinutes())
+        {
+            this.durationPlanned = new CustomTimePeriod(new Duration(this.getDurationLeft().getDurationObject().getMillis()));
+        }
     }
 
    private void markOnePlannedUnitDone()

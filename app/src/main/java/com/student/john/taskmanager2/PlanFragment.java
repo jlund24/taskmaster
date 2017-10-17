@@ -1,11 +1,8 @@
 package com.student.john.taskmanager2;
 
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,7 +22,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -55,8 +51,10 @@ public class PlanFragment extends android.support.v4.app.Fragment {
     private LinearLayout createPlanLayout;
     private LinearLayout planListLayout;
     private LinearLayout workingHoursLayout;
+    private LinearLayout addTasksLayout;
     private TextView workingHoursTitle;
     private ImageButton editWorkingHoursButton;
+    private Button addTasksButton;
 
     private Paint p = new Paint();
 
@@ -89,12 +87,21 @@ public class PlanFragment extends android.support.v4.app.Fragment {
 
         createPlanLayout = v.findViewById(R.id.create_plan_layout);
         planListLayout = v.findViewById(R.id.plan_list_layout);
+        addTasksLayout = v.findViewById(R.id.add_more_tasks_layout);
 
         saveButton = v.findViewById(R.id.make_plan_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 presenter.onSaveButtonClicked();
+            }
+        });
+
+        addTasksButton = v.findViewById(R.id.add_tasks_button);
+        addTasksButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onAddTasksButtonClicked();
             }
         });
 
@@ -111,7 +118,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         });
 
         this.presenter = new PlanPresenter(this);
-        presenter.setUpPlanFragment();
+        presenter.updatePlanFragment();
 
         return v;
     }
@@ -214,10 +221,22 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         editWorkingHoursButton.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_edit_black_24dp));
     }
 
-    public void removeTaskFromList(int position)
+    public void setAddTasksLayoutVisible(boolean visible)
     {
-        planTaskListAdapter.removeItem(position);
+        if (visible)
+        {
+            addTasksLayout.setVisibility(VISIBLE);
+        }
+        else
+        {
+            addTasksLayout.setVisibility(GONE);
+        }
     }
+
+//    public void removeTaskFromList(int position)
+//    {
+//        planTaskListAdapter.removeItem(position);
+//    }
 
     public void makeToast(String text)
     {
@@ -268,11 +287,11 @@ public class PlanFragment extends android.support.v4.app.Fragment {
             notifyItemInserted(tasks.size());
         }
 
-        public void removeItem(int position) {
-            tasks.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, tasks.size());
-        }
+//        public void removeItem(int position) {
+//            tasks.remove(position);
+//            notifyItemRemoved(position);
+//            notifyItemRangeChanged(position, tasks.size());
+//        }
     }
 
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener
@@ -296,7 +315,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         {
             taskTitle.setText(newTask.getTitle());
             String dueDateString = newTask.getDueDateString();
-            String durationString = newTask.getDurationString();
+            String durationString = newTask.getDurationPlannedString();
             if (dueDateString != null && durationString != null)
             {
                 dueDateTextView.setText(dueDateString);
@@ -372,7 +391,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
                         RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
                         c.drawBitmap(icon,null,icon_dest,p);
                     } else if (dX < 0) {
-                        p.setColor(ContextCompat.getColor(getActivity(), R.color.red));
+                        p.setColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
                         RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
                         c.drawRect(background,p);
                         icon = drawableToBitmap(R.drawable.ic_remove_circle_outline_white_24dp);

@@ -1,13 +1,28 @@
 package com.student.john.taskmanager2.models;
 
 
+import com.student.john.taskmanager2.ClientModel;
+
 import org.joda.time.Duration;
 
+import static com.student.john.taskmanager2.models.Plan.PlanState.EMPTY;
+import static com.student.john.taskmanager2.models.Plan.PlanState.FULL;
+import static com.student.john.taskmanager2.models.Plan.PlanState.OVERFULL;
+import static com.student.john.taskmanager2.models.Plan.PlanState.UNDERFULL;
+
 public class Plan {
+
+    public static final class PlanState {
+        public static final String EMPTY = "PlanEmpty";
+        public static final String OVERFULL = "Overfull";
+        public static final String FULL = "Full";
+        public static final String UNDERFULL = "Underfull";
+    }
 
     private TaskList tasks;
     private ICustomTimePeriod duration;
     private TaskList removedTasks = new TaskList();
+    private ClientModel model = ClientModel.getInstance();
 
     public Plan(TaskList tasks, CustomTimePeriod duration)
     {
@@ -40,17 +55,46 @@ public class Plan {
         this.removedTasks = removedTasks;
     }
 
-    public void addTask(Task task)
+    public void addTaskToPlan(Task task)
     {
-        tasks.add(task);
-        removedTasks.removeTask(task);
+        long extraMinutes = duration.getTotalAsMinutes() - tasks.getTotalDurationPlannedOfTasksInMin();
+        //task is planned and we're adding more time
+        if (task.getPlanned() && task.getDurationLeftUnplanned().getTotalAsMinutes() > 0)
+        {
+            while (this.duration.getTotalAsMinutes() > tasks.getTotalDurationPlannedOfTasksInMin() &&
+                    task.getDurationLeftUnplanned().getTotalAsMinutes() >= 0) {
+                task.markOneDivisibleUnitPlanned();
+            }
+        }
+        else if (!task.getPlanned() && task.getDivisibleUnit() != null &&
+                task.getDivisibleUnit().getTotalAsMinutes() > 0)
+        {
+            while (this.duration.getTotalAsMinutes() > tasks.getTotalDurationPlannedOfTasksInMin() &&
+                    task.getDurationLeftUnplanned().getTotalAsMinutes() >= 0) {
+                task.markOneDivisibleUnitPlanned();
+                task.setPlanned(true);
+                if (tasks.getTask(task.getTaskID()) == null)
+                {
+                    tasks.add(task);
+                }
+            }
+        }
+        else if (!task.getPlanned() && task.getDurationLeft().getTotalAsMinutes() <= extraMinutes)
+        {
+            task.setPlanned(true);
+            task.setDurationPlanned(new CustomTimePeriod(new Duration(task.getDurationLeft().getDurationObject().getMillis())));
+            tasks.add(task);
+        }
+
+
+
     }
 
     public void removeTask(String taskID)
     {
         if (tasks.getTask(taskID) != null)
         {
-            removedTasks.add(tasks.getTask(taskID));
+            //removedTasks.add(tasks.getTask(taskID));
             tasks.getTask(taskID).setPlanned(false);
             tasks.getTask(taskID).setDurationPlanned(null);
             tasks.removeTaskByID(taskID);
@@ -87,5 +131,65 @@ public class Plan {
             task.setDurationPlanned(null);
             task.setPlanned(false);
         }
+    }
+
+    public String getStatus()
+    {
+        if (tasks.getTaskList().isEmpty())
+        {
+            return EMPTY;
+        }
+        else if (isOverfull())
+        {
+            return OVERFULL;
+        }
+        else
+        {
+            TaskList possibleTasksToFill = getPossibleTasksToFillIn();
+            if (!possibleTasksToFill.getTaskList().isEmpty())
+            {
+                return UNDERFULL;
+            }
+            else
+            {
+                return FULL;
+            }
+        }
+
+    }
+
+    private boolean isOverfull()
+    {
+        return tasks.getTotalDurationPlannedOfTasksInMin() > duration.getTotalAsMinutes();
+    }
+
+    public TaskList getPossibleTasksToFillIn()
+    {
+
+        TaskList eligibleTasks = new TaskList();
+        TaskList sortableTasks = model.getSortableTasks();
+        long planMinutesToWork = duration.getTotalAsMinutes() - tasks.getTotalDurationPlannedOfTasksInMin();
+
+        for (Task task : sortableTasks.getTaskList())
+        {
+            if (task.getDivisibleUnit() != null)
+            {
+                if (task.getDivisibleUnit().getTotalAsMinutes() != 0 &&
+                        task.getDivisibleUnit().getTotalAsMinutes() <= planMinutesToWork &&
+                        task.getDivisibleUnit().getTotalAsMinutes() <= task.getDurationLeftUnplanned().getTotalAsMinutes())
+                {
+
+                    eligibleTasks.add(task);
+                }
+            }
+            else if ((int)task.getDurationLeftUnplanned().getTotalAsMinutes() <= (int)planMinutesToWork + 1)
+            {
+                eligibleTasks.add(task);
+            }
+
+        }
+
+        return eligibleTasks;
+
     }
 }

@@ -161,5 +161,12 @@ public class DateConverter {
 
     }
 
+    public boolean isToday(LocalDateTime date)
+    {
+        return (startDate.getDayOfMonth() == startDate.getDayOfMonth() &&
+                startDate.getMonthOfYear() == startDate.getMonthOfYear() &&
+                startDate.getYear() == startDate.getYear());
+    }
+
 
 }

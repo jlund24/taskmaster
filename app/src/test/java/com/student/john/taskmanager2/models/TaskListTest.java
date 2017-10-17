@@ -42,7 +42,7 @@ public class TaskListTest {
     public void testGetTotalDurationOfTasksInMin()
     {
         ICustomTimePeriod expected = new CustomTimePeriod(new Period(4,0,0,0));
-        assertEquals(expected.getTotalAsMinutes(), taskList.getTotalDurationOfTasksInMin());
+        assertEquals(expected.getTotalAsMinutes(), taskList.getTotalDurationPlannedOfTasksInMin());
     }
 
     @Test

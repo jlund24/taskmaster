@@ -109,4 +109,13 @@
     <string name="adjust_tasks">Adjust Tasks</string>
     <string name="task_total_duration">Task Total:</string>
     <string name="plan_total_duration">Work Time:</string>
+    <string name="add_tasks">Add Tasks</string>
+    <string name="add_more_tasks_message">You have some extra time! \nTap here to add more to your plan</string>
+    <string name="completion_type">Completion Type</string>
+    <string name="task_type_completed_message">Full planned time or segment completed?</string>
+    <string name="full_time">Full Time</string>
+    <string name="segment">Segment</string>
+    <string name="planned">planned</string>
+    <string name="add_task_explanation">Select a task below to add</string>
+    <string name="plan_how_long">How much time do you have today?</string>
 </resources>

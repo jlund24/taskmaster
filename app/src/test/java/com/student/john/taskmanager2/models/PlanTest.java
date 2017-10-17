@@ -1,6 +1,8 @@
 package com.student.john.taskmanager2.models;
 
 
+import com.student.john.taskmanager2.ClientModel;
+
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
 import org.junit.Before;
@@ -8,12 +10,14 @@ import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 
 public class PlanTest {
 
     private Plan plan;
+    private ClientModel model = ClientModel.getInstance();
 
     @Before
     public void setUp()
@@ -25,22 +29,28 @@ public class PlanTest {
         task.setDuration(new CustomTimePeriod(new Period(12,0,0,0)));
         task.setDivisibleUnit(new CustomTimePeriod(new Period(0,30,0,0)));
         task.setDurationPlanned(new CustomTimePeriod(new Period(2,30,0,0)));
+        task.setPlanned(true);
         task.setTaskID("prototype");
         taskList.add(task);
+        model.addTask(task);
 
         task = new Task("read Bom", null);
-        task.setDueDateTime(new LocalDateTime(2017,10,14,23,59));
+        task.setDueDateTime(new LocalDateTime(2017,10,16,23,59));
         task.setDuration(new CustomTimePeriod(new Period(0,30,0,0)));
         task.setDurationPlanned(new CustomTimePeriod(new Period(0,30,0,0)));
+        task.setPlanned(true);
         task.setTaskID("bom");
         taskList.add(task);
+        model.addTask(task);
 
         task = new Task("3.3 online", null);
-        task.setDueDateTime(new LocalDateTime(2017,10,14,23,59));
+        task.setDueDateTime(new LocalDateTime(2017,10,16,23,59));
         task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
         task.setDurationPlanned(new CustomTimePeriod(new Period(1,0,0,0)));
+        task.setPlanned(true);
         task.setTaskID("math");
         taskList.add(task);
+        model.addTask(task);
 
         plan = new Plan(taskList, new CustomTimePeriod(new Period(4,0,0,0)));
     }
@@ -83,6 +93,18 @@ public class PlanTest {
                 mathTask.getDurationCompleted().getTotalAsMinutes());
         assertEquals(new CustomTimePeriod(new Period(3,0,0,0)).getTotalAsMinutes(),
                 plan.getDuration().getTotalAsMinutes());
+    }
+
+    @Test
+    public void testGetPossibleTasksToFillIn()
+    {
+        plan.removeTask("math");
+        TaskList possibleTasks = plan.getPossibleTasksToFillIn();
+        System.out.println(possibleTasks.toString());
+
+        assertNotNull(possibleTasks.getTask("prototype"));
+        assertNotNull(possibleTasks.getTask("math"));
+        assertNull(possibleTasks.getTask("bom"));
     }
 
 
