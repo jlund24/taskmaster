@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="28dp"
-              android:layout_marginTop="5dp"
+              android:layout_height="40dp"
+
               android:layout_marginBottom="5dp"
                 android:gravity="center_vertical">
 
@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:textColor="#808080"
         android:textSize="18sp"
-        android:gravity="left"
+        android:gravity="left|center_vertical"
         android:text="hi"
         android:layout_marginLeft="15dp"/>
 

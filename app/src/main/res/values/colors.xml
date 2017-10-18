@@ -7,4 +7,6 @@
     <color name="android_default">#808080</color>
     <color name="red">#ff0000</color>
     <color name="green">#40c900</color>
+    <color name="black">#000000</color>
+    <color name="transparent_gray">#64808080</color>
 </resources>

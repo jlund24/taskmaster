@@ -281,6 +281,10 @@ public class PlanPresenter {
     public void onPlanDurationInputChanged(String input)
     {
         planFragment.updateSuggestions(model.getSuggestionsContaining(input));
+        if (input.equals(""))
+        {
+            planFragment.setTextAccepted(false);
+        }
         if (converter.getDurationFromString(input) != null)
         {
             planFragment.setTextAccepted(true);

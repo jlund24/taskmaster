@@ -150,7 +150,7 @@ public class ClientModel {
         ArrayList<String> suggestions = new ArrayList<>();
         if (s.equals(""))
         {
-            return durationSuggestions;
+            return durationSuggestions.subList(1,5);
         }
 
         for (String suggestion : durationSuggestions)

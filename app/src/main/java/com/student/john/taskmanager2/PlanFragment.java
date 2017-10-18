@@ -516,7 +516,6 @@ public class PlanFragment extends android.support.v4.app.Fragment {
 
     public void updateSuggestions(List<String> suggestions)
     {
-        List<String> stop = suggestions;
         autoCompleteAdapter = new SuggestionAdapter(suggestions);
         autoCompleteRecyclerView.setAdapter(autoCompleteAdapter);
         autoCompleteAdapter.notifyDataSetChanged();

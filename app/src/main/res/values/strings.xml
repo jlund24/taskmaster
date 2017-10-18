@@ -117,6 +117,18 @@
     <string name="segment">Segment</string>
     <string name="planned">planned</string>
     <string name="add_task_explanation">Select a task below to add</string>
-    <string name="plan_how_long">How much time do you have?</string>
+    <string name="plan_how_long">How much time do you have?  e.g. 2h 30m</string>
     <string name="title_activity_add__edit__task_1">Add_Edit_Task_1</string>
+
+    <string name="task_title_question">What do you want to do?</string>
+    <string name="duedate_question">When should it be done?</string>
+    <string name="duetime_question">What time?</string>
+    <string name="duration_question">How long will it take? (or enter to skip)</string>
+    <string name="segment_question">In what size segments?</string>
+    <string name="skip">Skip</string>
+
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="midnight">Midnight</string>
 </resources>

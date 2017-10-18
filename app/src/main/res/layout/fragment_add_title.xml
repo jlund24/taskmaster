@@ -1,0 +1,50 @@
+<LinearLayout
+    android:id="@+id/create_plan_1_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center">
+
+        <AutoCompleteTextView
+            android:layout_weight="0.9"
+            android:id="@+id/task_title_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/task_title_question"
+            android:maxLines="1"
+            android:inputType="text"
+            android:layout_marginLeft="5dp"
+            />
+
+        <ImageView
+            android:id="@+id/input_accepted_icon"
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_check_circle_gray_24dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/title_flow_hint"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="20dp"
+        android:lines="2"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        android:text="Hit enter to move to next field"/>
+</LinearLayout>
