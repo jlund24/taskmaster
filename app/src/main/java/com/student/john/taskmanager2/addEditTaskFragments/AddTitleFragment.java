@@ -91,6 +91,12 @@ public class AddTitleFragment extends Fragment {
         return titleInput.getText().toString();
     }
 
+    public void setTitleInputText(String text)
+    {
+        titleInput.setText(text);
+        presenter.onTitleInputChanged();
+    }
+
     public void setAccepted(boolean accepted)
     {
         if (accepted)

@@ -4,6 +4,7 @@ package com.student.john.taskmanager2.addEditTaskFragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -48,6 +49,7 @@ public class AddSegmentsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_add_segments, container, false);
 
         segmentSuggestionsList = v.findViewById(R.id.auto_complete_recyclerView);
+        segmentSuggestionsList.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
         if (adapter == null) {
 
             adapter = new AddSegmentsFragment.SuggestionAdapter(new ArrayList<String>());
@@ -82,7 +84,7 @@ public class AddSegmentsFragment extends Fragment {
         });
 
         acceptedIcon = v.findViewById(R.id.input_accepted_icon);
-
+        presenter.setUpSegmentsFragment();
         return v;
     }
 
@@ -167,6 +169,7 @@ public class AddSegmentsFragment extends Fragment {
     public void setSegmentInputText(String text)
     {
         segmentInputTextView.setText(text);
+        presenter.onSegmentsInputChanged();
     }
 
     public String getSegmentsInputText()

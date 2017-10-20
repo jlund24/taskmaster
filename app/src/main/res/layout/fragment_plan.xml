@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/plan_how_long"
                 android:maxLines="1"
-                android:inputType="textShortMessage"
+                android:inputType="textVisiblePassword"
                 android:layout_marginLeft="5dp"
                 />
 

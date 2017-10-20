@@ -20,6 +20,7 @@ import android.widget.Button;
 public class CompletionDialogFragment extends DialogFragment {
 
     private PlanPresenter presenter;
+    private TaskPresenter taskPresenter;
     private Button fullTimeButton;
     private Button segmentButton;
 
@@ -41,7 +42,7 @@ public class CompletionDialogFragment extends DialogFragment {
         fullTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onFullTimeButtonClicked();
+                onFullTimeButtonClicked();
                 dismiss();
             }
         });
@@ -50,7 +51,7 @@ public class CompletionDialogFragment extends DialogFragment {
         segmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onSegmentButtonClicked();
+                onSegmentButtonClicked();
                 dismiss();
             }
         });
@@ -71,6 +72,34 @@ public class CompletionDialogFragment extends DialogFragment {
 
     public void setPresenter(PlanPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void setTaskPresenter(TaskPresenter taskPresenter) {
+        this.taskPresenter = taskPresenter;
+    }
+
+    private void onFullTimeButtonClicked()
+    {
+        if (presenter != null)
+        {
+            presenter.onFullTimeButtonClicked();
+        }
+        else if (taskPresenter != null)
+        {
+            taskPresenter.onFullTimeButtonClicked();
+        }
+    }
+
+    private void onSegmentButtonClicked()
+    {
+        if (presenter != null)
+        {
+            presenter.onSegmentButtonClicked();
+        }
+        else if (taskPresenter != null)
+        {
+            taskPresenter.onSegmentButtonClicked();
+        }
     }
 
     public static CompletionDialogFragment newInstance()

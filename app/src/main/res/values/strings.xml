@@ -24,7 +24,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
-    <string name="sort_filter">Sort/Filter</string>
+    <string name="sort_filter">Sort</string>
 
     <string name="list">List</string>
     <string name="plan">Plan</string>
@@ -124,11 +124,16 @@
     <string name="duedate_question">When should it be done?</string>
     <string name="duetime_question">What time?</string>
     <string name="duration_question">How long will it take? (or enter to skip)</string>
-    <string name="segment_question">In what size segments?</string>
+    <string name="segment_question">In what size segments? (or enter to skip)</string>
     <string name="skip">Skip</string>
 
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
     <string name="evening">Evening</string>
     <string name="midnight">Midnight</string>
+    <string name="title_activity_task_info">TaskInfoActivity</string>
+
+    <string name="left">left</string>
+    <string name="dueDate_and_duration">Due Date and Duration</string>
+    <string name="sort_by">Sort By</string>
 </resources>

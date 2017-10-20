@@ -3,6 +3,7 @@ package com.student.john.taskmanager2.models;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +65,67 @@ public class TaskList {
         });
     }
 
+    public void sortByDueDate()
+    {
+        Collections.sort(taskList, new Comparator<Task>()
+        {
+            @Override
+            public int compare(Task task1, Task task2) {
+                if (task1.getDueDateTime() == null && task2.getDueDateTime() == null)
+                {
+                    return -1;
+                }
+                else if (task1.getDueDateTime() == null)
+                {
+                    return 1;
+                }
+                else if (task2.getDueDateTime() == null)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return task1.getDueDateTime().compareTo(task2.getDueDateTime());
+                }
+            }
+        });
+    }
+
+    public void sortByDuration()
+    {
+        Collections.sort(taskList, new Comparator<Task>()
+        {
+            @Override
+            public int compare(Task task1, Task task2) {
+                if (task1.getDurationLeft() == null && task2.getDurationLeft() == null)
+                {
+                    return -1;
+                }
+                else if (task1.getDurationLeft() == null)
+                {
+                    return 1;
+                }
+                else if (task2.getDurationLeft() == null)
+                {
+                    return -1;
+                }
+                else
+                {
+                    if (task1.getDurationLeft().getTotalAsMinutes() > task2.getDurationLeft().getTotalAsMinutes())
+                    {
+                        return -1;
+                    }
+                    else
+                    {
+                        return 1;
+                    }
+                }
+            }
+        });
+    }
+
+
+
 //    public void sortByFields()
 //    {
 //        Collections.sort(taskList, new Comparator<Task>()
@@ -90,14 +152,15 @@ public class TaskList {
     {
         if (taskMap.containsKey(task.getTaskID()))
         {
-            //if the task was already in the list, we need to remove it before we add its edited version
-            taskList.remove( taskMap.get(task.getTaskID()) );
-            taskMap.put(task.getTaskID(), task);
-            taskList.add(task);
+//            //if the task was already in the list, we need to remove it before we add its edited version
+//
+//            taskList.remove( taskMap.get(task.getTaskID()) );
+//            taskMap.put(task.getTaskID(), task);
+//            taskList.add(0,task);
         }
         else
         {
-            taskList.add(task);
+            taskList.add(0,task);
             taskMap.put(task.getTaskID(), task);
         }
 

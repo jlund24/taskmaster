@@ -57,12 +57,25 @@ public class AddDueDateFragment extends Fragment {
                 presenter.onDueDateSkipClicked();
             }
         });
+        presenter.setUpDueDateFragment();
         return v;
     }
 
     public LocalDateTime getDateFromCalendar()
     {
         return new LocalDateTime(dueDatePicker.getYear(), dueDatePicker.getMonth() + 1, dueDatePicker.getDayOfMonth(), 23,59);
+    }
+
+    public void setDatePickerDate(LocalDateTime date)
+    {
+        dueDatePicker.init(date.getYear(), date.getMonthOfYear() - 1, date.getDayOfMonth(), new DatePicker.OnDateChangedListener() {
+
+            @Override
+            public void onDateChanged(DatePicker datePicker, int year, int month, int dayOfMonth) {
+                presenter.onDueDateClicked();
+
+            }
+        });
     }
 
     public static AddDueDateFragment newInstance()
@@ -80,5 +93,7 @@ public class AddDueDateFragment extends Fragment {
     public void setPresenter(Add_EditTask1Presenter presenter) {
         this.presenter = presenter;
     }
+
+
 
 }

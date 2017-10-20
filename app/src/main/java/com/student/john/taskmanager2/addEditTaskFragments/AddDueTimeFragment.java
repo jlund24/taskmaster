@@ -23,6 +23,7 @@ import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_BOTTOM_LEF
 import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_BOTTOM_RIGHT;
 import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_TOP_LEFT;
 import static com.student.john.taskmanager2.ClientModel.ButtonEnum.DT_TOP_RIGHT;
+import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MIDNIGHT;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -138,9 +139,13 @@ public class AddDueTimeFragment extends Fragment {
         {
             return bottomLeftDueTimeButton.getText().toString();
         }
-        else
+        else if (bottomRightDueTimeButton.isChecked())
         {
             return bottomRightDueTimeButton.getText().toString();
+        }
+        else
+        {
+            return MIDNIGHT;
         }
     }
 

@@ -1,11 +1,15 @@
 package com.student.john.taskmanager2.addEditTaskFragments;
 
 
+import com.student.john.taskmanager2.ClientModel;
 import com.student.john.taskmanager2.CustomDurationConverter;
 import com.student.john.taskmanager2.DateConverter;
-import com.student.john.taskmanager2.addEditTaskViews_Presenters.DueDatePickerFragment;
+import com.student.john.taskmanager2.TimeConverter;
+import com.student.john.taskmanager2.models.ICustomTimePeriod;
+import com.student.john.taskmanager2.models.Task;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 public class Add_EditTask1Presenter {
 
@@ -15,8 +19,15 @@ public class Add_EditTask1Presenter {
     private AddDueTimeFragment dueTimeFragment;
     private AddDurationFragment durationFragment;
     private AddSegmentsFragment segmentsFragment;
+    private Task editingTask;
 
-    private CustomDurationConverter converter = new CustomDurationConverter();
+    private ClientModel model = ClientModel.getInstance();
+
+    private boolean dueDateSet = false;
+
+    private DateConverter dateConverter = new DateConverter();
+    private TimeConverter timeConverter = new TimeConverter();
+    private CustomDurationConverter durationConverter = new CustomDurationConverter();
 
     public Add_EditTask1Presenter(Add_Edit_Task_1 activity) {
         this.activity = activity;
@@ -24,6 +35,87 @@ public class Add_EditTask1Presenter {
 
     public void onSaveButtonClicked()
     {
+        //check title is set
+        if (titleFragment.getTitleInputText().length() > 0)
+        {
+            saveTask();
+            activity.finish();
+        }
+        else
+        {
+            activity.makeToast("Tasks must have a title to be saved.");
+            activity.moveToPage(Add_Edit_Task_1.TITLE_INPUT);
+        }
+    }
+
+    public void updateTaskPreview()
+    {
+        if (titleFragment.getTitleInputText().length() > 0)
+        {
+            activity.setTaskTitle(titleFragment.getTitleInputText());
+        }
+
+
+    }
+
+    private void saveTask()
+    {
+        Task taskToSave;
+        if (editingTask != null)
+        {
+            taskToSave = editingTask;
+        }
+        else
+        {
+            taskToSave = new Task();
+        }
+
+        taskToSave.setTitle(titleFragment.getTitleInputText());
+
+        if (dueDateSet)
+        {
+            LocalDateTime dueDate = dueDateFragment.getDateFromCalendar();
+            TimeConverter converter = new TimeConverter();
+
+            LocalTime dueTime = converter.getTimeFromWord(dueTimeFragment.getDueTimeString());
+            taskToSave.setDueDateTime(dueDate.withTime(dueTime.getHourOfDay(), dueTime.getMinuteOfHour(),0,0));
+        }
+
+        if (durationFragment.getDurationInputText().length() > 0)
+        {
+            CustomDurationConverter durationConverter = new CustomDurationConverter();
+            ICustomTimePeriod duration = durationConverter.getDurationFromString(durationFragment.getDurationInputText());
+            taskToSave.setDuration(duration);
+
+            ICustomTimePeriod segmentDuration = durationConverter.getDurationFromString(segmentsFragment.getSegmentsInputText());
+            taskToSave.setDivisibleUnit(segmentDuration);
+        }
+
+        taskToSave.generateTaskID();
+
+        ClientModel.getInstance().addTask(taskToSave);
+    }
+
+    public void setUpForEdit(String taskID)
+    {
+        editingTask = model.getTask(taskID);
+        activity.setTaskTitle(editingTask.getTitle());
+
+        if (editingTask.getDueDateTime() != null)
+        {
+            activity.setDueDate(dateConverter.getWordFromDate(editingTask.getDueDateTime()));
+        }
+
+        if (editingTask.getDuration() != null)
+        {
+            activity.setDuration(durationConverter.getWordFromDuration(editingTask.getDuration()));
+        }
+
+        activity.setSaveButtonEnabled(true);
+        activity.setTaskTitleFocused(true);
+        activity.setTaskDurationFocused(false);
+        activity.setTaskDueDateFocused(false);
+
 
     }
 
@@ -65,6 +157,7 @@ public class Add_EditTask1Presenter {
         if (titleFragment.getTitleInputText().length() > 0)
         {
             titleFragment.setAccepted(true);
+            //activity.setSaveButtonEnabled(false);
         }
         else
         {
@@ -74,6 +167,10 @@ public class Add_EditTask1Presenter {
 
     public void setUpTitleFragment()
     {
+        if (editingTask != null)
+        {
+            titleFragment.setTitleInputText(editingTask.getTitle());
+        }
 
     }
 
@@ -92,6 +189,7 @@ public class Add_EditTask1Presenter {
         DateConverter converter = new DateConverter();
         String dueDateString = converter.getWordFromDate(dueDateFragment.getDateFromCalendar());
         activity.setDueDate(dueDateString);
+        dueDateSet = true;
         //move to dueTime
         activity.moveToPage(Add_Edit_Task_1.DUETIME_INPUT);
     }
@@ -104,7 +202,10 @@ public class Add_EditTask1Presenter {
 
     public void setUpDueDateFragment()
     {
-
+        if (editingTask != null && editingTask.getDueDateTime() != null)
+        {
+            dueDateFragment.setDatePickerDate(editingTask.getDueDateTime());
+        }
     }
 
     //dueTime fragment functions
@@ -133,6 +234,10 @@ public class Add_EditTask1Presenter {
 
     public void setUpDueTimeFragment()
     {
+        if (editingTask != null && editingTask.getDueDateTime() != null)
+        {
+            dueTimeFragment.setSelectedButton(model.getButtonFromContent(timeConverter.getWordFromTime(editingTask.getDueDateTime())));
+        }
 
     }
 
@@ -147,6 +252,7 @@ public class Add_EditTask1Presenter {
     public void onDurationSuggestionClicked(String suggestion)
     {
         durationFragment.setDurationInputText(suggestion);
+        onDurationEnterClicked();
         activity.moveToPage(Add_Edit_Task_1.SEGMENT_INPUT);
     }
 
@@ -154,10 +260,11 @@ public class Add_EditTask1Presenter {
     {
         if (durationFragment.getDurationInputText().equals(""))
         {
-            activity.moveToPage(Add_Edit_Task_1.TITLE_INPUT);
+            onSaveButtonClicked();
         }
-        else if (converter.getDurationFromString(durationFragment.getDurationInputText()) != null)
+        else if (durationConverter.getDurationFromString(durationFragment.getDurationInputText()) != null)
         {
+            activity.setDuration(durationFragment.getDurationInputText());
             activity.moveToPage(Add_Edit_Task_1.SEGMENT_INPUT);
         }
         else
@@ -169,7 +276,8 @@ public class Add_EditTask1Presenter {
 
     public void onDurationInputChanged()
     {
-        if (converter.getDurationFromString(durationFragment.getDurationInputText()) != null)
+        durationFragment.updateSuggestions(model.getSuggestionsContaining(durationFragment.getDurationInputText()));
+        if (durationConverter.getDurationFromString(durationFragment.getDurationInputText()) != null)
         {
             durationFragment.setAccepted(true);
         }
@@ -178,6 +286,15 @@ public class Add_EditTask1Presenter {
             durationFragment.setAccepted(false);
         }
 
+    }
+
+    public void setUpDurationFragment()
+    {
+        if (editingTask != null && editingTask.getDuration() != null)
+        {
+            durationFragment.setDurationInputText(durationConverter.getWordFromDuration(editingTask.getDuration()));
+        }
+        durationFragment.updateSuggestions(model.getSuggestionsContaining(durationFragment.getDurationInputText()));
     }
 
     //segments fragment function
@@ -191,18 +308,18 @@ public class Add_EditTask1Presenter {
     public void onSegmentSuggestionClicked(String suggestion)
     {
         segmentsFragment.setSegmentInputText(suggestion);
+        onSaveButtonClicked();
     }
 
     public void onSegmentsEnterClicked()
     {
         if (segmentsFragment.getSegmentsInputText().equals(""))
         {
-            activity.moveToPage(Add_Edit_Task_1.TITLE_INPUT);
+            onSaveButtonClicked();
         }
-        else if (converter.getDurationFromString(segmentsFragment.getSegmentsInputText()) != null)
+        else if (durationConverter.getDurationFromString(segmentsFragment.getSegmentsInputText()) != null)
         {
-            //activity.moveToPage(Add_Edit_Task_1.TITLE_INPUT);
-            //set task to have segments
+            onSaveButtonClicked();
         }
         else
         {
@@ -213,7 +330,8 @@ public class Add_EditTask1Presenter {
 
     public void onSegmentsInputChanged()
     {
-        if (converter.getDurationFromString(segmentsFragment.getSegmentsInputText()) != null)
+        segmentsFragment.updateSuggestions(model.getSuggestionsContaining(segmentsFragment.getSegmentsInputText()));
+        if (durationConverter.getDurationFromString(segmentsFragment.getSegmentsInputText()) != null)
         {
             segmentsFragment.setAccepted(true);
         }
@@ -221,5 +339,17 @@ public class Add_EditTask1Presenter {
         {
             segmentsFragment.setAccepted(false);
         }
+    }
+
+    public void setUpSegmentsFragment()
+    {
+        if (editingTask != null && editingTask.getDuration() != null &&
+                editingTask.getDivisibleUnit() != null &&
+                editingTask.getDivisibleUnit().getTotalAsMinutes() > 0)
+        {
+            segmentsFragment.setSegmentInputText(durationConverter.getWordFromDuration(editingTask.getDivisibleUnit()));
+        }
+
+        segmentsFragment.updateSuggestions(model.getSuggestionsContaining(segmentsFragment.getSegmentsInputText()));
     }
 }

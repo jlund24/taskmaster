@@ -70,7 +70,10 @@ public class CustomDurationConverter {
     public String getWordFromDuration(ICustomTimePeriod duration)
     {
         PeriodFormatterBuilder builder = new PeriodFormatterBuilder();
-
+        if (duration == null)
+        {
+            return null;
+        }
         if (duration.getHours() > 0)
         {
             builder.appendHours().appendSuffix("h");
@@ -96,6 +99,10 @@ public class CustomDurationConverter {
 
     public CustomTimePeriod getDurationFromString(String input)
     {
+        if (input.equals(""))
+        {
+            return null;
+        }
         PeriodFormatter formatter = new PeriodFormatterBuilder()
                 .appendHours().appendSuffix("h").appendSeparatorIfFieldsAfter(" ")
                 .appendMinutes().appendSuffix("m") .toFormatter();

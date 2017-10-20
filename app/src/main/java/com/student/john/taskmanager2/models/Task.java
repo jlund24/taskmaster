@@ -36,6 +36,7 @@ public class Task implements ITask, Comparable {
     private ICustomTimePeriod divisibleUnit = null;
     private Boolean planned = false;
     private Boolean completed = false;
+    private Boolean deleted = false;
     private String taskID = null;
 
     public static final class TaskParamTitle {
@@ -134,7 +135,11 @@ public class Task implements ITask, Comparable {
         {
             return 0d;
         }
-        return this.duration.getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
+        if (getDurationLeft() == null)
+        {
+            return 0d;
+        }
+        return getDurationLeft().getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
     }
 
     private Double getMinutesUntilDue()
@@ -319,7 +324,15 @@ public class Task implements ITask, Comparable {
         ICustomTimePeriod durationLeft = getDurationLeft();
         if (this.durationPlanned != null && durationLeft != null)
         {
-            return new CustomTimePeriod(durationLeft.minus(durationPlanned));
+            CustomTimePeriod returnValue = new CustomTimePeriod(durationLeft.minus(durationPlanned));
+            if (returnValue.getDurationObject().getMillis() < 0)
+            {
+                return new CustomTimePeriod(new Duration(0));
+            }
+            else
+            {
+                return returnValue;
+            }
         }
         else if (durationLeft != null)
         {
@@ -395,11 +408,33 @@ public class Task implements ITask, Comparable {
         setPlanned(false);
     }
 
+    public void markFullTaskDone()
+    {
+        this.durationCompleted = new CustomTimePeriod(new Duration(duration.getDurationObject().getMillis()));
+        setDurationPlanned(null);
+        setPlanned(false);
+        setCompleted(true);
+    }
+
     public Boolean getPlanned() {
         return planned;
     }
 
     public void setPlanned(Boolean planned) {
         this.planned = planned;
+    }
+
+    public int getProgress()
+    {
+        long progress = (long)((float)getDurationCompleted().getTotalAsMinutes() / (float)getDuration().getTotalAsMinutes() * 100);
+        return (int)progress;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

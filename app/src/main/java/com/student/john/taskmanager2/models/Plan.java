@@ -35,6 +35,17 @@ public class Plan {
         return tasks;
     }
 
+    public void refreshTasks()
+    {
+        for (Task task : tasks.getTaskList())
+        {
+            if (task.getCompleted() || task.getDeleted() || !task.getPlanned())
+            {
+                tasks.removeTaskByID(task.getTaskID());
+            }
+        }
+    }
+
     public ICustomTimePeriod getDuration() {
         return duration;
     }
@@ -61,7 +72,7 @@ public class Plan {
         //task is planned and we're adding more time
         if (task.getPlanned() && task.getDurationLeftUnplanned().getTotalAsMinutes() > 0)
         {
-            while (this.duration.getTotalAsMinutes() > tasks.getTotalDurationPlannedOfTasksInMin() &&
+            while (this.duration.getTotalAsMinutes() >= tasks.getTotalDurationPlannedOfTasksInMin() &&
                     task.getDurationLeftUnplanned().getTotalAsMinutes() >= 0) {
                 task.markOneDivisibleUnitPlanned();
             }
@@ -70,7 +81,7 @@ public class Plan {
                 task.getDivisibleUnit().getTotalAsMinutes() > 0)
         {
             while (this.duration.getTotalAsMinutes() > tasks.getTotalDurationPlannedOfTasksInMin() &&
-                    task.getDurationLeftUnplanned().getTotalAsMinutes() >= 0) {
+                    task.getDurationLeftUnplanned().getTotalAsMinutes() > 0) {
                 task.markOneDivisibleUnitPlanned();
                 task.setPlanned(true);
                 if (tasks.getTask(task.getTaskID()) == null)
@@ -78,6 +89,7 @@ public class Plan {
                     tasks.add(task);
                 }
             }
+            System.out.println();
         }
         else if (!task.getPlanned() && task.getDurationLeft().getTotalAsMinutes() <= extraMinutes)
         {

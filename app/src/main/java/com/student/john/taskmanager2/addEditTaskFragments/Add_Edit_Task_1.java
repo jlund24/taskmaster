@@ -12,9 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.student.john.taskmanager2.PlanFragment;
 import com.student.john.taskmanager2.R;
@@ -51,10 +53,71 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
         sectionsPagerAdapter = new Add_Edit_Task_1.SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(sectionsPagerAdapter);
+        mViewPager.setOffscreenPageLimit(5);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                presenter.updateTaskPreview();
+                if (taskTitle.getText().toString().length() > 0 && !taskTitle.getText().toString().equals("Title"))
+                {
+                    setSaveButtonEnabled(true);
+                }
+                else
+                {
+                    setSaveButtonEnabled(false);
+                }
+                switch (position)
+                {
+                    case TITLE_INPUT:
+                        setTaskTitleFocused(true);
+                        setTaskDueDateFocused(false);
+                        setTaskDurationFocused(false);
+                        break;
+                    case DUEDATE_INPUT:
+
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        setTaskTitleFocused(false);
+                        setTaskDueDateFocused(true);
+                        setTaskDurationFocused(false);
+                        break;
+                    case DUETIME_INPUT:
+
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        setTaskTitleFocused(false);
+                        setTaskDueDateFocused(true);
+                        setTaskDurationFocused(false);
+                        break;
+                    case DURATION_INPUT:
+                        setTaskTitleFocused(false);
+                        setTaskDueDateFocused(false);
+                        setTaskDurationFocused(true);
+                        break;
+                    case SEGMENT_INPUT:
+                        setTaskTitleFocused(false);
+                        setTaskDueDateFocused(false);
+                        setTaskDurationFocused(true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         this.presenter = new Add_EditTask1Presenter(this);
+
         taskTitle = (TextView) findViewById(R.id.task_title);
         taskDueDate = (TextView) findViewById(R.id.task_dueDate);
+        taskDuration = (TextView) findViewById(R.id.task_duration);
         dueDateIcon = (ImageView) findViewById(R.id.duedate_icon);
         durationIcon = (ImageView) findViewById(R.id.duration_icon);
 
@@ -65,6 +128,10 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
                 presenter.onSaveButtonClicked();
             }
         });
+        String editingTaskID = getIntent().getStringExtra(EXTRA_TASK_ID_TO_EDIT);
+        if (editingTaskID != null) {
+            presenter.setUpForEdit(editingTaskID);
+        }
 
     }
 
@@ -77,7 +144,7 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
         }
         else
         {
-            saveButton.setTextColor(64808080);
+            saveButton.setTextColor(ContextCompat.getColor(this, R.color.transparent_gray));
             saveButton.setEnabled(false);
         }
 
@@ -97,8 +164,16 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
         }
         else
         {
-            taskTitle.setTextColor(ContextCompat.getColor(this, R.color.black));
+            if (!taskTitle.getText().toString().equals("Title"))
+            {
+                taskTitle.setTextColor(ContextCompat.getColor(this, R.color.black));
+            }
+            else
+            {
+                taskTitle.setTextColor(ContextCompat.getColor(this, R.color.transparent_gray));
+            }
             taskTitle.setTypeface(null, NORMAL);
+
         }
     }
 
@@ -112,11 +187,22 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
         if (focused)
         {
             taskDueDate.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            dueDateIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_event_orange_24dp));
             taskDueDate.setTypeface(null, BOLD);
         }
         else
         {
-            taskTitle.setTextColor(ContextCompat.getColor(this, R.color.black));
+            if (!taskDueDate.getText().toString().equals("Due Date"))
+            {
+                taskDueDate.setTextColor(ContextCompat.getColor(this, R.color.black));
+                dueDateIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_event_black_24dp));
+            }
+            else
+            {
+                taskDueDate.setTextColor(ContextCompat.getColor(this, R.color.transparent_gray));
+                dueDateIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_event_gray_24dp));
+            }
+
             taskDueDate.setTypeface(null, NORMAL);
         }
     }
@@ -124,6 +210,31 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
     public void setDuration(String text)
     {
         taskDuration.setText(text);
+    }
+
+    public void setTaskDurationFocused(boolean focused)
+    {
+        if (focused)
+        {
+            taskDuration.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+            durationIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_hourglass_empty_orange_24dp));
+            taskDuration.setTypeface(null, BOLD);
+        }
+        else
+        {
+            if (!taskDuration.getText().toString().equals("Duration"))
+            {
+                taskDuration.setTextColor(ContextCompat.getColor(this, R.color.black));
+                durationIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_hourglass_empty_black_24dp));
+            }
+            else
+            {
+                taskDuration.setTextColor(ContextCompat.getColor(this, R.color.transparent_gray));
+                durationIcon.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_hourglass_empty_gray_24dp));
+            }
+
+            taskDuration.setTypeface(null, NORMAL);
+        }
     }
 
 
@@ -193,6 +304,8 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
             }
             return null;
         }
+
+
     }
 
     public static Intent newIntent(Context packageContext, String taskID)
@@ -205,6 +318,50 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
     public void moveToPage(int position)
     {
         mViewPager.setCurrentItem(position, true);
+        if (taskTitle.getText().toString().length() > 0)
+        {
+            setSaveButtonEnabled(true);
+        }
+        else
+        {
+            setSaveButtonEnabled(false);
+        }
+        switch (position)
+        {
+            case TITLE_INPUT:
+                setTaskTitleFocused(true);
+                setTaskDueDateFocused(false);
+                setTaskDurationFocused(false);
+                break;
+            case DUEDATE_INPUT:
+                setTaskTitleFocused(false);
+                setTaskDueDateFocused(true);
+                setTaskDurationFocused(false);
+                break;
+            case DUETIME_INPUT:
+                setTaskTitleFocused(false);
+                setTaskDueDateFocused(true);
+                setTaskDurationFocused(false);
+                break;
+            case DURATION_INPUT:
+                setTaskTitleFocused(false);
+                setTaskDueDateFocused(false);
+                setTaskDurationFocused(true);
+                break;
+            case SEGMENT_INPUT:
+                setTaskTitleFocused(false);
+                setTaskDueDateFocused(false);
+                setTaskDurationFocused(true);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void makeToast(String text)
+    {
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 }

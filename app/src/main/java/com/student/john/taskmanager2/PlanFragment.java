@@ -588,6 +588,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         }
     }
 
-
-
+    public PlanPresenter getPresenter() {
+        return presenter;
+    }
 }

@@ -37,6 +37,10 @@ public class ClientModel {
         PR_TOP_LEFT, PR_TOP_RIGHT, PR_BOTTOM_LEFT, PR_BOTTOM_RIGHT
     }
 
+    public enum SortEnum {
+        DUE_DATE, DURATION_LEFT, DUE_DATE_AND_DURATION
+    }
+
     private static final ClientModel ourInstance = new ClientModel();
     private TaskList allTasks = new TaskList();
 
@@ -45,6 +49,7 @@ public class ClientModel {
 
     private Map<ButtonEnum, String> buttonToContentMap = new HashMap<>();
     private Map<String, ButtonEnum> contentToButtonMap = new HashMap<>();
+    private SortEnum sortType;
 
     private List<String> durationSuggestions = new ArrayList<>();
 
@@ -58,30 +63,30 @@ public class ClientModel {
 
         setDefaultButtonMaps();
         setUpDurationSuggestions();
-        Task task = new Task();
-        task.setTitle("prototype");
-        task.setDueDateTime(new LocalDateTime(2017,10,17,10,0));
-        task.setDuration(new CustomTimePeriod(new Period(5,0,0,0)));
-        task.setDivisibleUnit(new CustomTimePeriod(new Period(1,0,0,0)));
-        allTasks.add(task);
-
-        task = new Task();
-        task.setTitle("study for 252");
-        task.setDueDateTime(new LocalDateTime(2017,10,18,16,0));
-        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
-        allTasks.add(task);
-
-        task = new Task();
-        task.setTitle("read BoM");
-        task.setDueDateTime(new LocalDateTime(2017,10,16,23,59));
-        task.setDuration(new CustomTimePeriod(new Period(0,30,0,0)));
-        allTasks.add(task);
-
-        task = new Task();
-        task.setTitle("4.1 online");
-        task.setDueDateTime(new LocalDateTime(2017,10,17,23,59));
-        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
-        allTasks.add(task);
+//        Task task = new Task();
+//        task.setTitle("prototype");
+//        task.setDueDateTime(new LocalDateTime(2017,10,17,10,0));
+//        task.setDuration(new CustomTimePeriod(new Period(5,0,0,0)));
+//        task.setDivisibleUnit(new CustomTimePeriod(new Period(1,0,0,0)));
+//        allTasks.add(task);
+//
+//        task = new Task();
+//        task.setTitle("study for 252");
+//        task.setDueDateTime(new LocalDateTime(2017,10,18,16,0));
+//        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
+//        allTasks.add(task);
+//
+//        task = new Task();
+//        task.setTitle("read BoM");
+//        task.setDueDateTime(new LocalDateTime(2017,10,16,23,59));
+//        task.setDuration(new CustomTimePeriod(new Period(0,30,0,0)));
+//        allTasks.add(task);
+//
+//        task = new Task();
+//        task.setTitle("4.1 online");
+//        task.setDueDateTime(new LocalDateTime(2017,10,17,23,59));
+//        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
+//        allTasks.add(task);
     }
 
     //-------------------------------------------
@@ -150,7 +155,7 @@ public class ClientModel {
         ArrayList<String> suggestions = new ArrayList<>();
         if (s.equals(""))
         {
-            return durationSuggestions.subList(1,5);
+            return durationSuggestions.subList(1,6);
         }
 
         for (String suggestion : durationSuggestions)
@@ -238,7 +243,7 @@ public class ClientModel {
             task.setPlanned(true);
             task.setDurationPlanned(task.getDurationLeftUnplanned());
         }
-        long minutesToWork = duration.getTotalAsMinutes();
+        long minutesToWork = duration.getDurationObject().getStandardMinutes();
 
         //if the total duration of tasks due today is already more than how much they said they would work,
         //just return what we have
@@ -258,26 +263,24 @@ public class ClientModel {
         {
             for (Task task : sortableTasks.getTaskList())
             {
-                if (task.getDivisibleUnit() != null)
+                if (task.getDivisibleUnit() != null && task.getDivisibleUnit().getTotalAsMinutes() != 0 &&
+                    task.getDivisibleUnit().getTotalAsMinutes() <= minutesToWork &&
+                    task.getDivisibleUnit().getTotalAsMinutes() <= task.getDurationLeftUnplanned().getTotalAsMinutes())
                 {
-                    if (task.getDivisibleUnit().getTotalAsMinutes() != 0 &&
-                            task.getDivisibleUnit().getTotalAsMinutes() <= minutesToWork &&
-                            task.getDivisibleUnit().getTotalAsMinutes() < task.getDurationLeftUnplanned().getTotalAsMinutes())
-                    {
 
-                        task.markOneDivisibleUnitPlanned();
-                        task.setPlanned(true);
-                        forToday.add(task);
-                        minutesToWork -= task.getDivisibleUnit().getTotalAsMinutes();
-                        break;
-                    }
+                    task.markOneDivisibleUnitPlanned();
+                    task.setPlanned(true);
+                    forToday.add(task);
+                    minutesToWork -= task.getDivisibleUnit().getTotalAsMinutes();
+                    break;
+
                 }
                 else if ((int)task.getDurationLeftUnplanned().getTotalAsMinutes() <= (int)minutesToWork + 1)
                 {
                     forToday.add(task);
                     task.setPlanned(true);
-                    task.setDurationPlanned(task.getDurationLeftUnplanned());
                     minutesToWork -= task.getDurationLeftUnplanned().getTotalAsMinutes();
+                    task.setDurationPlanned(new CustomTimePeriod(task.getDurationPlanned().plus(task.getDurationLeftUnplanned())));
                     sortableTasks.removeTask(task);
                     break;
                 }
@@ -307,6 +310,31 @@ public class ClientModel {
                 visibleTasks.add(task);
             }
         }
+        if (sortType != null)
+        {
+            switch(sortType)
+            {
+                case DUE_DATE:
+                    visibleTasks.sortByDueDate();
+                    break;
+                case DURATION_LEFT:
+                    visibleTasks.sortByDuration();
+                    break;
+                case DUE_DATE_AND_DURATION:
+                    visibleTasks.sortByPoints();
+                    break;
+                default:
+                    break;
+            }
+        }
         return visibleTasks;
+    }
+
+    public void setSortType(SortEnum sortType) {
+        this.sortType = sortType;
+    }
+
+    public SortEnum getSortType() {
+        return sortType;
     }
 }

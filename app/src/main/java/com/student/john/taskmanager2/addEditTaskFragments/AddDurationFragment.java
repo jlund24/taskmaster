@@ -4,6 +4,7 @@ package com.student.john.taskmanager2.addEditTaskFragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -51,6 +52,7 @@ public class AddDurationFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_add_duration, container, false);
 
         durationSuggestionsList = v.findViewById(R.id.auto_complete_recyclerView);
+        durationSuggestionsList.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
         if (adapter == null) {
 
             adapter = new AddDurationFragment.SuggestionAdapter(new ArrayList<String>());
@@ -86,6 +88,8 @@ public class AddDurationFragment extends Fragment {
         });
 
         acceptedIcon = v.findViewById(R.id.input_accepted_icon);
+
+        presenter.setUpDurationFragment();
         return v;
     }
 
@@ -170,6 +174,7 @@ public class AddDurationFragment extends Fragment {
     public void setDurationInputText(String text)
     {
         durationInputTextView.setText(text);
+        presenter.onDurationInputChanged();
     }
 
     public String getDurationInputText()

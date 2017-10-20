@@ -21,6 +21,7 @@
             android:maxLines="1"
             android:inputType="text"
             android:layout_marginLeft="5dp"
+            android:maxLength="140"
             />
 
         <ImageView

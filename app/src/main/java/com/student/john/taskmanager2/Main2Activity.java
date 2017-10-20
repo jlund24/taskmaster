@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.student.john.taskmanager2.addEditTaskFragments.Add_Edit_Task_1;
 import com.student.john.taskmanager2.addEditTaskViews_Presenters.Add_EditTaskActivity;
@@ -39,6 +40,8 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
      */
     private ViewPager mViewPager;
     private FloatingActionButton fab;
+    private MainActivityPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,15 +79,18 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
                     final InputMethodManager imm = (InputMethodManager)getSystemService(
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
+                    presenter.updateTaskFragment();
                     fab.show();
                 }
                 else
                 {
-                    final InputMethodManager imm = (InputMethodManager)getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    if (imm != null && ClientModel.getInstance().getCurrentPlan() == null){
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-                    }
+
+//                    final InputMethodManager imm = (InputMethodManager)getSystemService(
+//                            Context.INPUT_METHOD_SERVICE);
+//                    if (imm != null && ClientModel.getInstance().getCurrentPlan() == null){
+//                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+//                    }
+                    presenter.updatePlanFragment();
                     fab.hide();
                 }
             }
@@ -98,7 +104,7 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-
+        this.presenter = new MainActivityPresenter(this);
 
     }
 
@@ -127,7 +133,7 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
     @Override
     public void onListFragmentInteraction(Task item) {
         Context context = getApplicationContext();
-        Intent intent = Add_EditTaskActivity.newIntent(context, item.getTaskID());
+        Intent intent = Add_Edit_Task_1.newIntent(context, item.getTaskID());
         startActivity(intent);
     }
 
@@ -150,11 +156,11 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
             // getItem is called to instantiate the fragment for the given page.
             if (position == 0)
             {
-                return TaskFragment.newInstance(1);
+                return presenter.getTaskFragment();
             }
             else
             {
-                return PlanFragment.newInstance();
+                return presenter.getPlanFragment();
 
             }
 
@@ -185,5 +191,9 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
         mViewPager.setCurrentItem(1);
     }
 
-
+    public void makeToast(String text)
+    {
+        Toast toast = Toast.makeText(this, text, Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }
