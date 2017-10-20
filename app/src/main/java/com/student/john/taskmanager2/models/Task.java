@@ -410,7 +410,11 @@ public class Task implements ITask, Comparable {
 
     public void markFullTaskDone()
     {
-        this.durationCompleted = new CustomTimePeriod(new Duration(duration.getDurationObject().getMillis()));
+        if (this.duration != null)
+        {
+            this.durationCompleted = new CustomTimePeriod(new Duration(duration.getDurationObject().getMillis()));
+        }
+
         setDurationPlanned(null);
         setPlanned(false);
         setCompleted(true);
