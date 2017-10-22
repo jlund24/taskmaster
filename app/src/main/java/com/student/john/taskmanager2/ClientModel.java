@@ -63,27 +63,20 @@ public class ClientModel {
 
         setDefaultButtonMaps();
         setUpDurationSuggestions();
-//        Task task = new Task();
-//        task.setTitle("prototype");
-//        task.setDueDateTime(new LocalDateTime(2017,10,17,10,0));
-//        task.setDuration(new CustomTimePeriod(new Period(5,0,0,0)));
-//        task.setDivisibleUnit(new CustomTimePeriod(new Period(1,0,0,0)));
-//        allTasks.add(task);
-//
+        Task task = new Task();
+        task.setTitle("Swipe right to complete");
+        task.setDueDateTime(new LocalDateTime().withTime(23,59,0,0));
+        task.setDuration(new CustomTimePeriod(new Period(0,1,0,0)));
+        allTasks.add(task);
+
+        task = new Task();
+        task.setTitle("Swipe left to delete");
+        task.setDueDateTime(new LocalDateTime().withTime(23,59,0,0));
+        task.setDuration(new CustomTimePeriod(new Period(0,1,0,0)));
+        allTasks.add(task);
+
 //        task = new Task();
-//        task.setTitle("study for 252");
-//        task.setDueDateTime(new LocalDateTime(2017,10,18,16,0));
-//        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
-//        allTasks.add(task);
-//
-//        task = new Task();
-//        task.setTitle("read BoM");
-//        task.setDueDateTime(new LocalDateTime(2017,10,16,23,59));
-//        task.setDuration(new CustomTimePeriod(new Period(0,30,0,0)));
-//        allTasks.add(task);
-//
-//        task = new Task();
-//        task.setTitle("4.1 online");
+//        task.setTitle("");
 //        task.setDueDateTime(new LocalDateTime(2017,10,17,23,59));
 //        task.setDuration(new CustomTimePeriod(new Period(1,0,0,0)));
 //        allTasks.add(task);
