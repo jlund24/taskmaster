@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.student.john.taskmanager2.ClientModel;
 import com.student.john.taskmanager2.R;
 
 import org.joda.time.LocalDateTime;
@@ -57,6 +59,10 @@ public class AddDueDateFragment extends Fragment {
                 presenter.onDueDateSkipClicked();
             }
         });
+        if (ClientModel.getInstance().getVisibleTasks().getTaskList().size() == 0)
+        {
+            makeToast("Swipe left or right on input pages to go back or move on.");
+        }
         presenter.setUpDueDateFragment();
         return v;
     }

@@ -88,13 +88,16 @@
                 android:layout_marginLeft="5dp"
                 />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/input_accepted_icon"
                 android:layout_weight="0.1"
                 android:layout_width="0dp"
                 android:layout_gravity="center"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
+                android:scaleX="1.4"
+                android:scaleY="1.4"
                 android:layout_marginRight="5dp"
+                android:background="@null"
                 android:src="@drawable/ic_check_circle_gray_24dp"/>
 
         </LinearLayout>
@@ -166,6 +169,37 @@
 
             android:id="@+id/plan_recyclerView"
             android:divider="#656565"/>
+
+        <LinearLayout
+            android:layout_weight="0.1"
+            android:id="@+id/out_of_time_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:lines="2"
+                android:text="@string/out_of_time"
+                android:gravity="center"
+                android:layout_marginBottom="5dp"
+                android:textSize="16sp"/>
+
+            <Button
+                android:id="@+id/new_plan_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/new_plan"
+                />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_weight="0.1"

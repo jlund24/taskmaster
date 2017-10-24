@@ -1,5 +1,6 @@
 package com.student.john.taskmanager2;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -64,6 +65,16 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         {
             holder.mDueDateView.setText(dueDateString);
             holder.mDueDateView.setVisibility(VISIBLE);
+            if (dueDateString.equals("Today"))
+            {
+                holder.mDueDateView.setTextColor(holder.mView.getResources().getColor(R.color.red));
+                holder.dueDateIcon.setImageDrawable(holder.mView.getResources().getDrawable(R.drawable.ic_event_red_24dp));
+            }
+            else
+            {
+                holder.mDueDateView.setTextColor(holder.mView.getResources().getColor(R.color.black));
+                holder.dueDateIcon.setImageDrawable(holder.mView.getResources().getDrawable(R.drawable.ic_event_black_24dp));
+            }
             holder.dueDateIcon.setVisibility(VISIBLE);
             holder.mDurationTextView.setText(durationString);
             holder.mDurationTextView.setVisibility(VISIBLE);
@@ -73,6 +84,16 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         {
             holder.mDueDateView.setText(dueDateString);
             holder.mDueDateView.setVisibility(VISIBLE);
+            if (dueDateString.equals("Today"))
+            {
+                holder.mDueDateView.setTextColor(holder.mView.getResources().getColor(R.color.red));
+                holder.dueDateIcon.setImageDrawable(holder.mView.getResources().getDrawable(R.drawable.ic_event_red_24dp));
+            }
+            else
+            {
+                holder.mDueDateView.setTextColor(holder.mView.getResources().getColor(R.color.black));
+                holder.dueDateIcon.setImageDrawable(holder.mView.getResources().getDrawable(R.drawable.ic_event_black_24dp));
+            }
             holder.dueDateIcon.setVisibility(VISIBLE);
             holder.mDurationTextView.setVisibility(GONE);
             holder.durationIcon.setVisibility(GONE);
@@ -146,6 +167,8 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             progressBar = view.findViewById(R.id.task_progressBar);
             durationLabel = view.findViewById(R.id.task_duration_label);
         }
+
+
 
         @Override
         public String toString() {

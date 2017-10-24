@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +27,9 @@ public class AddTitleFragment extends Fragment {
 
 
     private AutoCompleteTextView titleInput;
-    private ImageView inputAccepted;
+    private ImageButton inputAccepted;
     private boolean accepted;
-    private TextView flowHint;
+
 
     private Add_EditTask1Presenter presenter;
 
@@ -81,7 +82,21 @@ public class AddTitleFragment extends Fragment {
         });
 
         inputAccepted = v.findViewById(R.id.input_accepted_icon);
-        flowHint = v.findViewById(R.id.title_flow_hint);
+        inputAccepted.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Perform action on key press
+                if (!titleInput.getText().toString().equals(""))
+                {
+                    presenter.onTitleEnterClicked();
+                }
+                else
+                {
+                    makeToast("You must enter a title to move on.");
+                }
+            }
+        });
+
         presenter.setUpTitleFragment();
         return v;
     }
@@ -102,12 +117,12 @@ public class AddTitleFragment extends Fragment {
         if (accepted)
         {
             inputAccepted.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_green_24dp));
-            flowHint.setVisibility(VISIBLE);
+            inputAccepted.setEnabled(true);
         }
         else
         {
             inputAccepted.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_gray_24dp));
-            flowHint.setVisibility(View.INVISIBLE);
+            inputAccepted.setEnabled(false);
         }
     }
 

@@ -66,12 +66,17 @@ public class PlanPresenter {
     {
         planFragment.setFragmentToPlanListLayout();
         planFragment.updateTasks(model.getCurrentPlan().getTaskList().getTaskList());
-        planFragment.setWorkingTime(converter.getWordFromDuration(model.getCurrentPlan().getDuration()));
+        String durationString = converter.getWordFromDuration(model.getCurrentPlan().getDuration());
+//        if (durationString == null || durationString.equals(""))
+//        {
+//            durationString = "No time left!";
+//        }
+        planFragment.setWorkingTime(durationString);
         planFragment.clearTooManyTasksTheme();
 
         //show text view saying the plan's empty, either add more time or some new tasks to the list
         //and try making another plan
-        planFragment.setAddTasksLayoutVisible(true);
+        planFragment.setOutOfTimeLayoutVisible(true);
 
     }
 
@@ -155,6 +160,12 @@ public class PlanPresenter {
     public void onWorkingHoursClicked()
     {
         onPlanListClearClicked();
+    }
+
+    public void onNewPlanButtonClicked()
+    {
+        planFragment.setFragmentToCreatePlanLayout();
+        planFragment.setOutOfTimeLayoutVisible(false);
     }
 
 

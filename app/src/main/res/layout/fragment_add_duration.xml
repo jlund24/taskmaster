@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
         android:gravity="center">
 
         <AutoCompleteTextView
@@ -20,17 +21,21 @@
             android:layout_height="wrap_content"
             android:hint="@string/duration_question"
             android:maxLines="1"
+            android:textSize="20sp"
             android:inputType="textVisiblePassword"
             android:layout_marginLeft="5dp"
             />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/input_accepted_icon"
             android:layout_weight="0.1"
             android:layout_width="0dp"
             android:layout_gravity="center"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
+            android:scaleX="1.4"
+            android:scaleY="1.4"
             android:layout_marginRight="5dp"
+            android:background="@null"
             android:src="@drawable/ic_check_circle_gray_24dp"/>
 
     </LinearLayout>

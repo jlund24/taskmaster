@@ -104,27 +104,28 @@
     <string name="make_plan">Make Plan</string>
 
     <string name="uh_oh">Uh-oh</string>
-    <string name="too_many_tasks_message">It looks you have more to do than you allotted time for!</string>
+    <string name="too_many_tasks_message">It looks like you have more to do than you allotted time for!</string>
     <string name="add_time">Add Time</string>
     <string name="adjust_tasks">Adjust Tasks</string>
     <string name="task_total_duration">Task Total:</string>
     <string name="plan_total_duration">Work Time:</string>
-    <string name="add_tasks">Add Tasks</string>
+    <string name="add_tasks">Add Task</string>
+    <string name="out_of_time">You\'re out of time! \nTap here to add more time</string>
     <string name="add_more_tasks_message">You have some extra time! \nTap here to add more to your plan</string>
     <string name="completion_type">Completion Type</string>
     <string name="task_type_completed_message">Full planned time or segment completed?</string>
     <string name="full_time">Full Time</string>
     <string name="segment">Segment</string>
     <string name="planned">planned</string>
-    <string name="add_task_explanation">Select a task below to add</string>
+    <string name="add_task_explanation">No tasks will fit! Try adding some in the list view</string>
     <string name="plan_how_long">How much time do you have?  e.g. 2h 30m</string>
     <string name="title_activity_add__edit__task_1">Add_Edit_Task_1</string>
 
     <string name="task_title_question">What do you want to do?</string>
     <string name="duedate_question">When should it be done?</string>
     <string name="duetime_question">What time?</string>
-    <string name="duration_question">How long will it take? (or enter to skip)</string>
-    <string name="segment_question">In what size segments? (or enter to skip)</string>
+    <string name="duration_question">How long will it take?</string>
+    <string name="segment_question">In what length segments?</string>
     <string name="skip">Skip</string>
 
     <string name="morning">Morning</string>
@@ -136,4 +137,5 @@
     <string name="left">left</string>
     <string name="dueDate_and_duration">Due Date and Duration</string>
     <string name="sort_by">Sort By</string>
+    <string name="new_plan">New Plan</string>
 </resources>

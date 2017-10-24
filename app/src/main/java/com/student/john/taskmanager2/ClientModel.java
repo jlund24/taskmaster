@@ -66,13 +66,13 @@ public class ClientModel {
         Task task = new Task();
         task.setTitle("Swipe right to complete");
         task.setDueDateTime(new LocalDateTime().withTime(23,59,0,0));
-        task.setDuration(new CustomTimePeriod(new Period(0,1,0,0)));
+        //task.setDuration(new CustomTimePeriod(new Period(0,1,0,0)));
         allTasks.add(task);
 
         task = new Task();
         task.setTitle("Swipe left to delete");
         task.setDueDateTime(new LocalDateTime().withTime(23,59,0,0));
-        task.setDuration(new CustomTimePeriod(new Period(0,1,0,0)));
+        //task.setDuration(new CustomTimePeriod(new Period(0,1,0,0)));
         allTasks.add(task);
 
 //        task = new Task();
@@ -231,22 +231,23 @@ public class ClientModel {
     {
 
         //first get all tasks due today
-        TaskList forToday = allTasks.getTasksByDueDate(new LocalDateTime());
-        for (Task task : forToday.getTaskList())
-        {
-            task.setPlanned(true);
-            task.setDurationPlanned(task.getDurationLeftUnplanned());
-        }
+        TaskList forToday = new TaskList();
+//        TaskList forToday = allTasks.getTasksByDueDate(new LocalDateTime());
+//        for (Task task : forToday.getTaskList())
+//        {
+//            task.setPlanned(true);
+//            task.setDurationPlanned(task.getDurationLeftUnplanned());
+//        }
         long minutesToWork = duration.getDurationObject().getStandardMinutes();
 
         //if the total duration of tasks due today is already more than how much they said they would work,
         //just return what we have
-        if (minutesToWork <= forToday.getTotalDurationPlannedOfTasksInMin())
-        {
-            return forToday;
-        }
-
-        minutesToWork -= forToday.getTotalDurationPlannedOfTasksInMin();
+//        if (minutesToWork <= forToday.getTotalDurationPlannedOfTasksInMin())
+//        {
+//            return forToday;
+//        }
+//
+//        minutesToWork -= forToday.getTotalDurationPlannedOfTasksInMin();
 
         TaskList sortableTasks = getSortableTasks();
         sortableTasks.sortByPoints();

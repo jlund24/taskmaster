@@ -64,13 +64,15 @@ public class PlanFragment extends android.support.v4.app.Fragment {
     private LinearLayout workingHoursLayout;
     private LinearLayout addTasksLayout;
     private LinearLayout createPlan1Layout;
+    private LinearLayout outOfTimeLayout;
     private TextView workingHoursTitle;
     private ImageButton editWorkingHoursButton;
     private Button addTasksButton;
     private AutoCompleteTextView planDurationInput;
     private RecyclerView autoCompleteRecyclerView;
     private SuggestionAdapter autoCompleteAdapter;
-    private ImageView inputAcceptedIcon;
+    private ImageButton inputAcceptedIcon;
+    private Button newPlanButton;
     private boolean accepted = false;
 
     private Paint p = new Paint();
@@ -111,7 +113,7 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         createPlanLayout = v.findViewById(R.id.create_plan_1_layout);
         planListLayout = v.findViewById(R.id.plan_list_layout);
         addTasksLayout = v.findViewById(R.id.add_more_tasks_layout);
-
+        outOfTimeLayout = v.findViewById(R.id.out_of_time_layout);
         planDurationInput = v.findViewById(R.id.multiAutoCompleteTextView2);
         autoCompleteRecyclerView = v.findViewById(R.id.auto_complete_recyclerView);
         autoCompleteRecyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false));
@@ -161,6 +163,13 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         });
 
         inputAcceptedIcon = v.findViewById(R.id.input_accepted_icon);
+        inputAcceptedIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onAutoCompleteSuggestionClicked(planDurationInput.getText().toString());
+                hideKeyboard(view);
+            }
+        });
 
         saveButton = v.findViewById(R.id.make_plan_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -175,6 +184,14 @@ public class PlanFragment extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 presenter.onAddTasksButtonClicked();
+            }
+        });
+
+        newPlanButton = v.findViewById(R.id.new_plan_button);
+        newPlanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onNewPlanButtonClicked();
             }
         });
 
@@ -299,11 +316,12 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         if (accepted)
         {
             inputAcceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_green_24dp));
-
+            inputAcceptedIcon.setEnabled(true);
         }
         else
         {
             inputAcceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_gray_24dp));
+            inputAcceptedIcon.setEnabled(false);
         }
         setEnterKeyEnabled(accepted);
     }
@@ -318,10 +336,24 @@ public class PlanFragment extends android.support.v4.app.Fragment {
         if (visible)
         {
             addTasksLayout.setVisibility(VISIBLE);
+            outOfTimeLayout.setVisibility(GONE);
         }
         else
         {
             addTasksLayout.setVisibility(GONE);
+        }
+    }
+
+    public void setOutOfTimeLayoutVisible(boolean visible)
+    {
+        if (visible)
+        {
+            outOfTimeLayout.setVisibility(VISIBLE);
+            addTasksLayout.setVisibility(GONE);
+        }
+        else
+        {
+            outOfTimeLayout.setVisibility(GONE);
         }
     }
 

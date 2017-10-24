@@ -84,6 +84,12 @@ public class AddSegmentsFragment extends Fragment {
         });
 
         acceptedIcon = v.findViewById(R.id.input_accepted_icon);
+        acceptedIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onSegmentsEnterClicked();
+            }
+        });
         presenter.setUpSegmentsFragment();
         return v;
     }
@@ -188,10 +194,12 @@ public class AddSegmentsFragment extends Fragment {
         if (accepted)
         {
             acceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_green_24dp));
+            acceptedIcon.setEnabled(true);
         }
         else
         {
             acceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_gray_24dp));
+            acceptedIcon.setEnabled(false);
         }
     }
 }

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,7 @@ public class AddDurationFragment extends Fragment {
     private RecyclerView durationSuggestionsList;
     private TextView flowHint;
     private AutoCompleteTextView durationInputTextView;
-    private ImageView acceptedIcon;
+    private ImageButton acceptedIcon;
 
 
     private Add_EditTask1Presenter presenter;
@@ -88,7 +89,12 @@ public class AddDurationFragment extends Fragment {
         });
 
         acceptedIcon = v.findViewById(R.id.input_accepted_icon);
-
+        acceptedIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.onDurationEnterClicked();
+            }
+        });
         presenter.setUpDurationFragment();
         return v;
     }
@@ -193,10 +199,12 @@ public class AddDurationFragment extends Fragment {
         if (accepted)
         {
             acceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_green_24dp));
+            acceptedIcon.setEnabled(true);
         }
         else
         {
             acceptedIcon.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_check_circle_gray_24dp));
+            acceptedIcon.setEnabled(false);
         }
     }
 }
