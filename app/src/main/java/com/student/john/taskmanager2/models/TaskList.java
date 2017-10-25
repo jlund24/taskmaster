@@ -1,6 +1,8 @@
 package com.student.john.taskmanager2.models;
 
 
+import com.student.john.taskmanager2.ClientModel;
+
 import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Period;
@@ -152,11 +154,7 @@ public class TaskList {
     {
         if (taskMap.containsKey(task.getTaskID()))
         {
-//            //if the task was already in the list, we need to remove it before we add its edited version
-//
-//            taskList.remove( taskMap.get(task.getTaskID()) );
-//            taskMap.put(task.getTaskID(), task);
-//            taskList.add(0,task);
+            //update entry in database
         }
         else
         {
@@ -197,11 +195,11 @@ public class TaskList {
         return taskMap.get(taskID);
     }
 
-    public void clear()
-    {
-        taskList.clear();
-        taskMap.clear();
-    }
+//    public void clear()
+//    {
+//        taskList.clear();
+//        taskMap.clear();
+//    }
 
     public long getTotalDurationPlannedOfTasksInMin()
     {
@@ -246,36 +244,36 @@ public class TaskList {
         return totalDuration;
     }
 
-    public Task getTaskByTitle(String title)
-    {
-        for(Task task : taskList)
-        {
-            if (task.getTitle().equals(title))
-            {
-                return task;
-            }
-        }
-        return null;
-    }
+//    public Task getTaskByTitle(String title)
+//    {
+//        for(Task task : taskList)
+//        {
+//            if (task.getTitle().equals(title))
+//            {
+//                return task;
+//            }
+//        }
+//        return null;
+//    }
 
-    public TaskList getTasksByDueDate(LocalDateTime dueDate)
-    {
-        TaskList tasksWithDueDate = new TaskList();
-        for (Task task : taskList)
-        {
-            if (!task.getCompleted() && task.getDueDateTime() != null && task.getDuration() != null)
-            {
-                if (dueDate.getDayOfMonth() == task.getDueDateTime().getDayOfMonth() &&
-                        dueDate.getMonthOfYear() == task.getDueDateTime().getMonthOfYear() &&
-                        dueDate.getYear() == task.getDueDateTime().getYear())
-                {
-                    tasksWithDueDate.add(task);
-                }
-
-            }
-        }
-        return tasksWithDueDate;
-    }
+//    public TaskList getTasksByDueDate(LocalDateTime dueDate)
+//    {
+//        TaskList tasksWithDueDate = new TaskList();
+//        for (Task task : taskList)
+//        {
+//            if (!task.getCompleted() && task.getDueDateTime() != null && task.getDuration() != null)
+//            {
+//                if (dueDate.getDayOfMonth() == task.getDueDateTime().getDayOfMonth() &&
+//                        dueDate.getMonthOfYear() == task.getDueDateTime().getMonthOfYear() &&
+//                        dueDate.getYear() == task.getDueDateTime().getYear())
+//                {
+//                    tasksWithDueDate.add(task);
+//                }
+//
+//            }
+//        }
+//        return tasksWithDueDate;
+//    }
 
 
 }

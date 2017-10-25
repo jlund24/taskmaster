@@ -110,7 +110,7 @@
     <string name="task_total_duration">Task Total:</string>
     <string name="plan_total_duration">Work Time:</string>
     <string name="add_tasks">Add Task</string>
-    <string name="out_of_time">You\'re out of time! \nTap here to add more time</string>
+    <string name="out_of_time">You have no planned tasks left! \nTap here make a new plan</string>
     <string name="add_more_tasks_message">You have some extra time! \nTap here to add more to your plan</string>
     <string name="completion_type">Completion Type</string>
     <string name="task_type_completed_message">Full planned time or segment completed?</string>
@@ -138,4 +138,7 @@
     <string name="dueDate_and_duration">Due Date and Duration</string>
     <string name="sort_by">Sort By</string>
     <string name="new_plan">New Plan</string>
+
+    <string name="segment_info">What\'s a segment?</string>
+    <string name="segment_description">A segment is the minimum length of time you can work in one sitting on this task. E.g. it might take 20 hours to clean out the garage, but you can work on it in 30 minute segments.</string>
 </resources>

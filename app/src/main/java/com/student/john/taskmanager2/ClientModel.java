@@ -1,13 +1,22 @@
 package com.student.john.taskmanager2;
 
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.student.john.taskmanager2.database.SettingCursorWrapper;
+import com.student.john.taskmanager2.database.SettingsBaseHelper;
+import com.student.john.taskmanager2.database.TaskBaseHelper;
+import com.student.john.taskmanager2.database.TaskCursorWrapper;
+import com.student.john.taskmanager2.database.TaskDbSchema;
 import com.student.john.taskmanager2.models.CustomTimePeriod;
 import com.student.john.taskmanager2.models.Plan;
 import com.student.john.taskmanager2.models.Task;
 import com.student.john.taskmanager2.models.TaskList;
 
 import org.joda.time.LocalDateTime;
-import org.joda.time.Period;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +35,17 @@ import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.AFTER
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.EVENING;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MIDNIGHT;
 import static com.student.john.taskmanager2.TimeConverter.TimeStringValues.MORNING;
+import static com.student.john.taskmanager2.database.SettingsDbSchema.SettingsTable.Cols.VALUE;
+import static com.student.john.taskmanager2.database.SettingsDbSchema.SettingsTable.NAME;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.COMPLETED;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.DELETED;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.DIVISIBLE_UNIT;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.DUE_DATE_TIME;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.DURATION;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.DURATION_COMPLETED;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.DURATION_PLANNED;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.PLANNED;
+import static com.student.john.taskmanager2.database.TaskDbSchema.TaskTable.Cols.TITLE;
 
 
 public class ClientModel {
@@ -53,6 +73,10 @@ public class ClientModel {
 
     private List<String> durationSuggestions = new ArrayList<>();
 
+    private Context context;
+    private SQLiteDatabase taskDatabase;
+    private SQLiteDatabase settingDatabase;
+
     //SINGLETON FUNCTIONS------------------------
 
     public static ClientModel getInstance() {
@@ -60,6 +84,8 @@ public class ClientModel {
     }
 
     private ClientModel() {
+
+        //allTasks = getUncompletedAndUndeletedTasks();
 
         setDefaultButtonMaps();
         setUpDurationSuggestions();
@@ -174,7 +200,14 @@ public class ClientModel {
 
     public void addTask(Task task)
     {
-
+        if (allTasks.getTask(task.getTaskID()) != null)
+        {
+            updateTaskInDB(task);
+        }
+        else
+        {
+            addTaskToDB(task);
+        }
         allTasks.add(task);
     }
 
@@ -222,10 +255,10 @@ public class ClientModel {
         return sortableTasks;
     }
 
-    public TaskList getTasksDueToday()
-    {
-        return allTasks.getTasksByDueDate(new LocalDateTime());
-    }
+//    public TaskList getTasksDueToday()
+//    {
+//        return allTasks.getTasksByDueDate(new LocalDateTime());
+//    }
 
     private TaskList getTasksForPlan(CustomTimePeriod duration)
     {
@@ -326,10 +359,315 @@ public class ClientModel {
     }
 
     public void setSortType(SortEnum sortType) {
+
+        switch(sortType)
+        {
+            case DUE_DATE:
+                updateSettingInDB("Sort", "DueDate");
+                break;
+            case DURATION_LEFT:
+                updateSettingInDB("Sort", "Duration");
+                break;
+            case DUE_DATE_AND_DURATION:
+                updateSettingInDB("Sort", "DueDateAndDuration");
+                break;
+            default:
+                break;
+        }
         this.sortType = sortType;
     }
 
     public SortEnum getSortType() {
         return sortType;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public void initializeDB(Context context)
+    {
+        this.context = context;
+        taskDatabase = new TaskBaseHelper(context).getWritableDatabase();
+        this.allTasks = getUncompletedAndUndeletedTasks();
+        if (getTaskCount() == 0)
+        {
+            //add tutorial tasks
+            Task task = new Task();
+            task.setTitle("Swipe right to complete");
+            task.setDueDateTime(new LocalDateTime().withTime(23,59,0,0));
+            addTask(task);
+
+            task = new Task();
+            task.setTitle("Swipe left to delete");
+            task.setDueDateTime(new LocalDateTime().withTime(23,59,0,0));
+            addTask(task);
+        }
+        settingDatabase = new SettingsBaseHelper(context).getWritableDatabase();
+        populateSettings();
+        buildPlanFromDB();
+    }
+
+    public void buildPlanFromDB()
+    {
+        //query settings table for plan
+        //if duration isn't null, set the duration to that and query task table for planned tasks
+        //that aren't completed or deleted
+        String planDuration = getSettingValueFromDB("Plan");
+        CustomDurationConverter converter = new CustomDurationConverter();
+        CustomTimePeriod duration = converter.getDurationFromString(planDuration);
+        if (duration != null)
+        {
+            TaskList tasksForPlan = getPlannedTasks();
+            this.currentPlan = new Plan(tasksForPlan, duration);
+        }
+    }
+
+    public void setPlanInDB(Plan plan)
+    {
+        String duration = null;
+        if (plan != null)
+        {
+            duration = new CustomDurationConverter().getWordFromDuration(plan.getDuration());
+        }
+        updateSettingInDB("Plan", duration);
+    }
+
+    public TaskList getPlannedTasks()
+    {
+        TaskList plannedTasks = new TaskList();
+        for (Task task : allTasks.getTaskList())
+        {
+            if (task.getPlanned())
+            {
+                plannedTasks.add(task);
+            }
+        }
+        return plannedTasks;
+    }
+
+    public void addSettingToDB(String settingTitle, String settingValue)
+    {
+        ContentValues values = getContentValuesForSetting(settingTitle, settingValue);
+        settingDatabase.insert(NAME,null,values);
+    }
+
+    public void updateSettingInDB(String settingTitle, String settingValue)
+    {
+        ContentValues values = getContentValuesForSetting(settingTitle, settingValue);
+
+        settingDatabase.update(NAME, values,
+                TITLE + " = ?",
+                new String[]{settingTitle});
+    }
+
+    public int getTaskCount()
+    {
+        int taskCount = 0;
+
+        TaskCursorWrapper cursor = queryTasks(null, null);
+
+        try {
+            cursor.moveToFirst();
+            taskCount = cursor.getCount();
+        } finally {
+            cursor.close();
+        }
+
+        return taskCount;
+    }
+
+    public String getSettingValueFromDB(String settingTitle)
+    {
+        String settingValue = "";
+        String whereClause = TITLE + " = ?";
+
+        SettingCursorWrapper cursor = querySettings(whereClause, new String[]{settingTitle});
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                settingValue = cursor.getSetting()[1];
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return settingValue;
+    }
+
+    public Map<String, String> getAllSettingsFromDB()
+    {
+        HashMap<String, String> settings = new HashMap<>();
+
+        SettingCursorWrapper cursor = querySettings(null, null);
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                String[] values = cursor.getSetting();
+                settings.put(values[0], values[1]);
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return settings;
+    }
+
+    public void populateSettings()
+    {
+        Map<String, String> settings = getAllSettingsFromDB();
+        if (settings.containsKey("Plan"))
+        {
+            buildPlanFromDB();
+        }
+        else
+        {
+            addSettingToDB("Plan",null);
+        }
+        if (settings.containsKey("Sort"))
+        {
+            String sortValue = settings.get("Sort");
+            if (sortValue == null)
+            {
+                sortValue = "";
+            }
+            switch (sortValue)
+            {
+                case "DueDate":
+                    sortType = SortEnum.DUE_DATE;
+                    break;
+                case "Duration":
+                    sortType = SortEnum.DURATION_LEFT;
+                    break;
+                case "DueDateAndDuration":
+                    sortType = SortEnum.DUE_DATE_AND_DURATION;
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            addSettingToDB("Sort", null);
+        }
+    }
+
+    public void addTaskToDB(Task task)
+    {
+        ContentValues values = getContentValues(task);
+        taskDatabase.insert(TaskDbSchema.TaskTable.NAME, null, values);
+    }
+
+    public void updateTaskInDB(Task task)
+    {
+        String taskID = task.getTaskID();
+        ContentValues values = getContentValues(task);
+
+        taskDatabase.update(TaskDbSchema.TaskTable.NAME, values,
+                TaskDbSchema.TaskTable.Cols.TASK_ID + " = ?",
+                new String[] { taskID });
+    }
+
+    public TaskList getUncompletedAndUndeletedTasks()
+    {
+        TaskList taskList = new TaskList();
+        String whereClause = TaskDbSchema.TaskTable.Cols.COMPLETED + " = 0 and " +
+                TaskDbSchema.TaskTable.Cols.DELETED + " = 0";
+
+        TaskCursorWrapper cursor = queryTasks(whereClause, null);
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                taskList.add(cursor.getTask());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return taskList;
+    }
+
+    public TaskList getCompletedTasks()
+    {
+        TaskList taskList = new TaskList();
+        String whereClause = COMPLETED + " = 1";
+
+        TaskCursorWrapper cursor = queryTasks(whereClause, new String[]{});
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                taskList.add(cursor.getTask());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return taskList;
+    }
+
+    private static ContentValues getContentValues(Task task)
+    {
+        ContentValues values = new ContentValues();
+        DateConverter dateConverter = new DateConverter();
+        CustomDurationConverter durationConverter = new CustomDurationConverter();
+        values.put(TaskDbSchema.TaskTable.Cols.TASK_ID, task.getTaskID());
+        values.put(TITLE, task.getTitle());
+        values.put(DUE_DATE_TIME, dateConverter.getDBStringFromLocalDateTime(task.getDueDateTime()));
+        values.put(DURATION, durationConverter.getWordFromDuration(task.getDuration()));
+        values.put(TaskDbSchema.TaskTable.Cols.DIVISIBLE_UNIT, durationConverter.getWordFromDuration(task.getDivisibleUnit()));
+        values.put(DURATION_COMPLETED, durationConverter.getWordFromDuration(task.getDurationCompleted()));
+        values.put(DURATION_PLANNED, durationConverter.getWordFromDuration(task.getDurationPlanned()));
+        values.put(PLANNED, task.getPlanned());
+        values.put(COMPLETED, task.getCompleted());
+        values.put(DELETED, task.getDeleted());
+
+        return values;
+    }
+
+    private TaskCursorWrapper queryTasks(String whereClause, String[] whereArgs)
+    {
+        Cursor cursor = taskDatabase.query(
+                TaskDbSchema.TaskTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+
+        return new TaskCursorWrapper(cursor);
+    }
+
+    private static ContentValues getContentValuesForSetting(String settingTitle, String settingValue)
+    {
+        ContentValues values = new ContentValues();
+        values.put(TITLE, settingTitle);
+        values.put(VALUE, settingValue);
+
+        return values;
+    }
+
+    private SettingCursorWrapper querySettings(String whereClause, String[] whereArgs)
+    {
+        Cursor cursor = settingDatabase.query(
+                NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null
+        );
+
+        return new SettingCursorWrapper(cursor);
     }
 }

@@ -4,6 +4,7 @@ package com.student.john.taskmanager2.models;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.student.john.taskmanager2.ClientModel;
 import com.student.john.taskmanager2.DateConverter;
 import com.student.john.taskmanager2.CustomDurationConverter;
 import com.student.john.taskmanager2.TimeConverter;
@@ -13,6 +14,7 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 
+import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
 
@@ -356,6 +358,7 @@ public class Task implements ITask, Comparable {
             return;
         }
         this.durationCompleted = new CustomTimePeriod(this.durationCompleted.plus(this.divisibleUnit));
+        updateInDB();
     }
 
     public void markOneDivisibleUnitPlanned()
@@ -375,6 +378,7 @@ public class Task implements ITask, Comparable {
         {
             this.durationPlanned = new CustomTimePeriod(new Duration(this.getDurationLeft().getDurationObject().getMillis()));
         }
+        updateInDB();
     }
 
    private void markOnePlannedUnitDone()
@@ -389,6 +393,7 @@ public class Task implements ITask, Comparable {
         }
 
         this.durationPlanned = new CustomTimePeriod(this.durationPlanned.minus(this.divisibleUnit));
+        updateInDB();
     }
 
     public void markOneUnitDoneFromPlan()
@@ -406,6 +411,7 @@ public class Task implements ITask, Comparable {
             setCompleted(true);
         }
         setPlanned(false);
+        updateInDB();
     }
 
     public void markFullTaskDone()
@@ -418,6 +424,7 @@ public class Task implements ITask, Comparable {
         setDurationPlanned(null);
         setPlanned(false);
         setCompleted(true);
+        updateInDB();
     }
 
     public Boolean getPlanned() {
@@ -441,4 +448,18 @@ public class Task implements ITask, Comparable {
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
+
+    public void removeFromPlan()
+    {
+        setPlanned(false);
+        setDurationPlanned(null);
+        updateInDB();
+    }
+
+    public void updateInDB()
+    {
+        ClientModel.getInstance().updateTaskInDB(this);
+    }
+
+
 }

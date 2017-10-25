@@ -99,7 +99,7 @@ public class CustomDurationConverter {
 
     public CustomTimePeriod getDurationFromString(String input)
     {
-        if (input.equals(""))
+        if (input == null || input.equals(""))
         {
             return null;
         }

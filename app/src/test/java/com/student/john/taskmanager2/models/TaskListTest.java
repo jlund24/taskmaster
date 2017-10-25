@@ -45,10 +45,10 @@ public class TaskListTest {
         assertEquals(expected.getTotalAsMinutes(), taskList.getTotalDurationPlannedOfTasksInMin());
     }
 
-    @Test
-    public void testGetTasksByDueDate()
-    {
-        TaskList tasksDueToday = taskList.getTasksByDueDate(new LocalDateTime(2017,10,14,9,30));
-        assertEquals(2, tasksDueToday.getTaskList().size());
-    }
+//    @Test
+//    public void testGetTasksByDueDate()
+//    {
+//        TaskList tasksDueToday = taskList.getTasksByDueDate(new LocalDateTime(2017,10,14,9,30));
+//        assertEquals(2, tasksDueToday.getTaskList().size());
+//    }
 }

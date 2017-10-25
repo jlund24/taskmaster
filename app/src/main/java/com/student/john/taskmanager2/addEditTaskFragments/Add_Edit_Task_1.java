@@ -81,14 +81,20 @@ public class Add_Edit_Task_1 extends AppCompatActivity {
                         break;
                     case DUEDATE_INPUT:
 
-                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        if (getCurrentFocus() != null)
+                        {
+                            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        }
                         setTaskTitleFocused(false);
                         setTaskDueDateFocused(true);
                         setTaskDurationFocused(false);
                         break;
                     case DUETIME_INPUT:
 
-                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        if (getCurrentFocus() != null)
+                        {
+                            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                        }
                         setTaskTitleFocused(false);
                         setTaskDueDateFocused(true);
                         setTaskDurationFocused(false);

@@ -28,6 +28,10 @@ public class TaskPresenter implements ISortDialogPresenter{
         {
             model.getCurrentPlan().removeTask(swipedTask.getTaskID());
         }
+        else
+        {
+            swipedTask.updateInDB();
+        }
         taskFragment.updateUI();
 
     }
@@ -109,5 +113,10 @@ public class TaskPresenter implements ISortDialogPresenter{
         {
             sortFragment.setSortType(model.getSortType());
         }
+    }
+
+    public void onCompletionCancelled()
+    {
+        taskFragment.updateUI();
     }
 }

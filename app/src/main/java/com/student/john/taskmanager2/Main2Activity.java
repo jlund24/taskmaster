@@ -46,7 +46,7 @@ public class Main2Activity extends AppCompatActivity implements TaskFragment.OnL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-
+        ClientModel.getInstance().initializeDB(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three

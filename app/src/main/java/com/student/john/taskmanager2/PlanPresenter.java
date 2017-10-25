@@ -67,10 +67,10 @@ public class PlanPresenter {
         planFragment.setFragmentToPlanListLayout();
         planFragment.updateTasks(model.getCurrentPlan().getTaskList().getTaskList());
         String durationString = converter.getWordFromDuration(model.getCurrentPlan().getDuration());
-//        if (durationString == null || durationString.equals(""))
-//        {
-//            durationString = "No time left!";
-//        }
+        if (durationString == null || durationString.equals(""))
+        {
+            durationString = "No time left!";
+        }
         planFragment.setWorkingTime(durationString);
         planFragment.clearTooManyTasksTheme();
 
@@ -189,6 +189,11 @@ public class PlanPresenter {
         updatePlanFragment();
 
 
+    }
+
+    public void onCompletionCancelled()
+    {
+        updatePlanFragment();
     }
 
     private void removeTaskFromPlan(Task taskToRemove, int position)

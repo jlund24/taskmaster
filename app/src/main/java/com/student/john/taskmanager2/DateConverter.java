@@ -8,6 +8,8 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.sql.Timestamp;
+
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.OVERDUE;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TODAY;
 import static com.student.john.taskmanager2.DateConverter.DateStringValues.TOMORROW;
@@ -34,6 +36,7 @@ public class DateConverter {
     }
 
     private LocalDateTime startDate;
+    private DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
     public DateConverter()
     {
@@ -166,6 +169,56 @@ public class DateConverter {
         return (startDate.getDayOfMonth() == startDate.getDayOfMonth() &&
                 startDate.getMonthOfYear() == startDate.getMonthOfYear() &&
                 startDate.getYear() == startDate.getYear());
+    }
+
+    public Timestamp getTimestampFromLocalDateTime(LocalDateTime date)
+    {
+        if (date != null)
+        {
+            return new Timestamp(date.toDateTime().getMillis());
+        }
+        else
+        {
+            return null;
+        }
+
+    }
+
+    public LocalDateTime getLocalDateTimeFromTimeStamp(Timestamp timestamp)
+    {
+        if(timestamp != null)
+        {
+            return new LocalDateTime(timestamp);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public String getDBStringFromLocalDateTime(LocalDateTime date)
+    {
+        if (date != null)
+        {
+            return date.toString(fmt);
+        }
+        else
+        {
+            return null;
+        }
+
+    }
+
+    public LocalDateTime getLocalDateTimeFromDBString(String dbString)
+    {
+        if (dbString != null)
+        {
+            return new LocalDateTime(fmt.parseDateTime(dbString));
+        }
+        else
+        {
+            return null;
+        }
     }
 
 

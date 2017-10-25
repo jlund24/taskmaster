@@ -28,6 +28,7 @@ public class Plan {
     {
         this.tasks = tasks;
         this.duration = duration;
+        model.setPlanInDB(this);
     }
 
     public TaskList getTaskList() {
@@ -60,6 +61,7 @@ public class Plan {
 
     public void setDuration(ICustomTimePeriod duration) {
         this.duration = duration;
+        model.setPlanInDB(this);
     }
 
     public void setRemovedTasks(TaskList removedTasks) {
@@ -72,8 +74,8 @@ public class Plan {
         //task is planned and we're adding more time
         if (task.getPlanned() && task.getDurationLeftUnplanned().getTotalAsMinutes() > 0)
         {
-            while (this.duration.getTotalAsMinutes() >= tasks.getTotalDurationPlannedOfTasksInMin() &&
-                    task.getDurationLeftUnplanned().getTotalAsMinutes() >= 0) {
+            while (this.duration.getTotalAsMinutes() > tasks.getTotalDurationPlannedOfTasksInMin() &&
+                    task.getDurationLeftUnplanned().getTotalAsMinutes() > 0) {
                 task.markOneDivisibleUnitPlanned();
             }
         }
@@ -107,8 +109,7 @@ public class Plan {
         if (tasks.getTask(taskID) != null)
         {
             //removedTasks.add(tasks.getTask(taskID));
-            tasks.getTask(taskID).setPlanned(false);
-            tasks.getTask(taskID).setDurationPlanned(null);
+            tasks.getTask(taskID).removeFromPlan();
             tasks.removeTaskByID(taskID);
 
         }
@@ -117,7 +118,7 @@ public class Plan {
 
     public void decrementDurationBy(ICustomTimePeriod duration)
     {
-        this.duration = new CustomTimePeriod(this.duration.minus(duration));
+        setDuration(new CustomTimePeriod(this.duration.minus(duration)));
     }
 
     public void markTaskCompleted(String taskID)
@@ -142,7 +143,9 @@ public class Plan {
         {
             task.setDurationPlanned(null);
             task.setPlanned(false);
+            task.updateInDB();
         }
+        model.setPlanInDB(null);
     }
 
     public String getStatus()

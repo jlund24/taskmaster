@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class AddSegmentsFragment extends Fragment {
     private TextView flowHint;
     private AutoCompleteTextView segmentInputTextView;
     private ImageView acceptedIcon;
+    private Button segmentInfoButton;
 
     private Add_EditTask1Presenter presenter;
 
@@ -88,6 +90,15 @@ public class AddSegmentsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 presenter.onSegmentsEnterClicked();
+            }
+        });
+        segmentInfoButton = v.findViewById(R.id.segment_help_button);
+        segmentInfoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), R.string.segment_description, Toast.LENGTH_LONG)
+                .show();
+
             }
         });
         presenter.setUpSegmentsFragment();

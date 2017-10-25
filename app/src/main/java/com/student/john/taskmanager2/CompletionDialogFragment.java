@@ -60,12 +60,13 @@ public class CompletionDialogFragment extends DialogFragment {
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                onCompletionCancel();
                 dismiss();
             }
         });
 
         Dialog dialog = dialogBuilder.create();
-        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCanceledOnTouchOutside(false);
 
         return dialog;
     }
@@ -99,6 +100,18 @@ public class CompletionDialogFragment extends DialogFragment {
         else if (taskPresenter != null)
         {
             taskPresenter.onSegmentButtonClicked();
+        }
+    }
+
+    private void onCompletionCancel()
+    {
+        if (presenter != null)
+        {
+            presenter.onCompletionCancelled();
+        }
+        else if (taskPresenter != null)
+        {
+            taskPresenter.onCompletionCancelled();
         }
     }
 
