@@ -67,6 +67,29 @@ public class TaskList {
         });
     }
 
+    public void sortByPointsNotPlan()
+    {
+        Collections.sort(taskList, new Comparator<Task>()
+        {
+            @Override
+            public int compare(Task task1, Task task2)
+            {
+                if (task1.getPointValueWithDurationLeft() > task2.getPointValueWithDurationLeft())
+                {
+                    return -1;
+                }
+                else if (task1.getPointValueWithDurationLeft() < task2.getPointValueWithDurationLeft())
+                {
+                    return 1;
+                }
+                else
+                {
+                    return task1.getDueDateTime().compareTo(task2.getDueDateTime());
+                }
+            }
+        });
+    }
+
     public void sortByDueDate()
     {
         Collections.sort(taskList, new Comparator<Task>()
@@ -165,7 +188,7 @@ public class TaskList {
     {
         if (taskMap.containsKey(task.getTaskID()))
         {
-            //update entry in database
+
         }
         else
         {

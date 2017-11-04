@@ -77,9 +77,6 @@ public class TaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
 
-//        List<Task> tasks = new ArrayList<>();
-//        tasks.add(new Task("hey there", new HashMap<String, Object>()));
-//        tasks.add(new Task("task 2", new HashMap<String, Object>()));
         TaskList tasks = ClientModel.getInstance().getVisibleTasks();
         // Set the adapter
         if (view instanceof RecyclerView) {

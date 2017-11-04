@@ -351,7 +351,7 @@ public class ClientModel {
                     visibleTasks.sortByDuration();
                     break;
                 case DUE_DATE_AND_DURATION:
-                    visibleTasks.sortByPoints();
+                    visibleTasks.sortByPointsNotPlan();
                     break;
                 case TITLE:
                     visibleTasks.sortByTitle();

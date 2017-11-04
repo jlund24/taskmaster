@@ -79,6 +79,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             holder.mDurationTextView.setText(durationString);
             holder.mDurationTextView.setVisibility(VISIBLE);
             holder.durationIcon.setVisibility(VISIBLE);
+            holder.durationLabel.setVisibility(VISIBLE);
         }
         else if (dueDateString != null)
         {
@@ -104,6 +105,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             holder.mDurationTextView.setText(durationString);
             holder.mDurationTextView.setVisibility(VISIBLE);
             holder.durationIcon.setVisibility(VISIBLE);
+            holder.durationLabel.setVisibility(VISIBLE);
             holder.mDueDateView.setVisibility(GONE);
             holder.dueDateIcon.setVisibility(GONE);
         }

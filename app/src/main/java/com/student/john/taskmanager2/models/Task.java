@@ -141,8 +141,21 @@ public class Task implements ITask, Comparable {
         {
             return 0d;
         }
-        Double pointValue = getDurationLeftUnplanned().getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
-        return pointValue;
+        return getDurationLeftUnplanned().getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
+
+    }
+
+    public Double getPointValueWithDurationLeft()
+    {
+        if (this.completed)
+        {
+            return 0d;
+        }
+        if (getDurationLeft() == null)
+        {
+            return 0d;
+        }
+        return getDurationLeft().getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
     }
 
     private Double getMinutesUntilDue()
