@@ -141,7 +141,8 @@ public class Task implements ITask, Comparable {
         {
             return 0d;
         }
-        return getDurationLeft().getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
+        Double pointValue = getDurationLeftUnplanned().getTotalAsMinutes() / (this.getMinutesUntilDue()) * 1000;
+        return pointValue;
     }
 
     private Double getMinutesUntilDue()
@@ -157,7 +158,7 @@ public class Task implements ITask, Comparable {
             {
                 minutes = minutes.dividedBy(4);
             }
-            return minutes.getMinutes() * 1.0;
+            return minutes.getMinutes() * 0.5;
         }
         else
         {
@@ -324,9 +325,9 @@ public class Task implements ITask, Comparable {
     public ICustomTimePeriod getDurationLeftUnplanned()
     {
         ICustomTimePeriod durationLeft = getDurationLeft();
-        if (this.durationPlanned != null && durationLeft != null)
+        if (getDurationPlanned() != null && durationLeft != null)
         {
-            CustomTimePeriod returnValue = new CustomTimePeriod(durationLeft.minus(durationPlanned));
+            CustomTimePeriod returnValue = new CustomTimePeriod(durationLeft.minus(getDurationPlanned()));
             if (returnValue.getDurationObject().getMillis() < 0)
             {
                 return new CustomTimePeriod(new Duration(0));

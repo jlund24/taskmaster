@@ -30,6 +30,7 @@ public class SortDialogFragment extends DialogFragment {
     private RadioGroup sortRadioGroup;
     private RadioButton sortByDueDate;
     private RadioButton sortByDuration;
+    private RadioButton sortByTitle;
     private RadioButton sortByDueDateAndDuration;
 
     private ISortDialogPresenter presenter;
@@ -52,7 +53,15 @@ public class SortDialogFragment extends DialogFragment {
         sortByDueDate = v.findViewById(R.id.sort_by_due_date);
         sortByDuration = v.findViewById(R.id.sort_by_duration);
         sortByDueDateAndDuration = v.findViewById(R.id.sort_by_both);
+        sortByTitle = v.findViewById(R.id.sort_by_title);
         dialogBuilder.setTitle(R.string.sort_by);
+        dialogBuilder.setNeutralButton(R.string.clear, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.onSortOptionsClearClicked();
+                dismiss();
+            }
+        });
         dialogBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -83,6 +92,8 @@ public class SortDialogFragment extends DialogFragment {
                 return ClientModel.SortEnum.DURATION_LEFT;
             case R.id.sort_by_both:
                 return ClientModel.SortEnum.DUE_DATE_AND_DURATION;
+            case R.id.sort_by_title:
+                return ClientModel.SortEnum.TITLE;
             default:
                 return null;
         }
@@ -101,6 +112,8 @@ public class SortDialogFragment extends DialogFragment {
             case DUE_DATE_AND_DURATION:
                 sortByDueDateAndDuration.setChecked(true);
                 break;
+            case TITLE:
+                sortByTitle.setChecked(true);
             default:
                 break;
         }

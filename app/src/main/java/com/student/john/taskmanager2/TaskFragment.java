@@ -1,7 +1,6 @@
 package com.student.john.taskmanager2;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -22,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.student.john.taskmanager2.database.AndroidDatabaseManager;
 import com.student.john.taskmanager2.models.Task;
 import com.student.john.taskmanager2.models.TaskList;
 
@@ -137,10 +135,11 @@ public class TaskFragment extends Fragment {
             presenter.onSortButtonClicked();
             return true;
         }
-        else if (id == R.id.action_settings)
+        else if (id == R.id.action_remove_deleted)
         {
-            Intent dbmanager = new Intent(getActivity(), AndroidDatabaseManager.class);
-            startActivity(dbmanager);
+
+            presenter.onDeletedMenuOptionClicked();
+
         }
 
         return super.onOptionsItemSelected(item);

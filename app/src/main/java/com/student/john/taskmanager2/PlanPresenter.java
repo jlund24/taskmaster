@@ -154,6 +154,8 @@ public class PlanPresenter {
     {
         model.getCurrentPlan().clear();
         model.setCurrentPlan(null);
+        planFragment.clearTooManyTasksTheme();
+        planFragment.setOutOfTimeLayoutVisible(false);
         planFragment.setFragmentToCreatePlanLayout();
     }
 
@@ -164,8 +166,9 @@ public class PlanPresenter {
 
     public void onNewPlanButtonClicked()
     {
-        planFragment.setFragmentToCreatePlanLayout();
-        planFragment.setOutOfTimeLayoutVisible(false);
+//        planFragment.setFragmentToCreatePlanLayout();
+//        planFragment.setOutOfTimeLayoutVisible(false);
+        onPlanListClearClicked();
     }
 
 

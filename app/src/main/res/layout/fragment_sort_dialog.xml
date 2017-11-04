@@ -35,6 +35,13 @@
                 android:text="@string/dueDate_and_duration"
                 android:textSize="16sp"/>
 
+            <RadioButton
+                android:id="@+id/sort_by_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title"
+                android:textSize="16sp"/>
+
         </RadioGroup>
 
 

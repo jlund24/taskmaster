@@ -126,6 +126,17 @@ public class TaskList {
         });
     }
 
+    public void sortByTitle()
+    {
+        Collections.sort(taskList, new Comparator<Task>()
+        {
+            @Override
+            public int compare(Task task1, Task task2) {
+                return task1.getTitle().compareTo(task2.getTitle());
+            }
+        });
+    }
+
 
 
 //    public void sortByFields()
@@ -158,7 +169,7 @@ public class TaskList {
         }
         else
         {
-            taskList.add(0,task);
+            taskList.add(task);
             taskMap.put(task.getTaskID(), task);
         }
 

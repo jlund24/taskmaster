@@ -119,4 +119,14 @@ public class TaskPresenter implements ISortDialogPresenter{
     {
         taskFragment.updateUI();
     }
+
+    public void onDeletedMenuOptionClicked()
+    {
+        taskFragment.makeToast(model.deleteDeletedTasks() + " tasks were permanently deleted.");
+    }
+
+    public void onSortOptionsClearClicked()
+    {
+        model.setSortType(null);
+    }
 }

@@ -58,7 +58,7 @@ public class ClientModel {
     }
 
     public enum SortEnum {
-        DUE_DATE, DURATION_LEFT, DUE_DATE_AND_DURATION
+        DUE_DATE, DURATION_LEFT, DUE_DATE_AND_DURATION, TITLE
     }
 
     private static final ClientModel ourInstance = new ClientModel();
@@ -298,6 +298,7 @@ public class ClientModel {
 
                     task.markOneDivisibleUnitPlanned();
                     task.setPlanned(true);
+                    updateTaskInDB(task);
                     forToday.add(task);
                     minutesToWork -= task.getDivisibleUnit().getTotalAsMinutes();
                     break;
@@ -309,6 +310,7 @@ public class ClientModel {
                     task.setPlanned(true);
                     minutesToWork -= task.getDurationLeftUnplanned().getTotalAsMinutes();
                     task.setDurationPlanned(new CustomTimePeriod(task.getDurationPlanned().plus(task.getDurationLeftUnplanned())));
+                    updateTaskInDB(task);
                     sortableTasks.removeTask(task);
                     break;
                 }
@@ -351,6 +353,8 @@ public class ClientModel {
                 case DUE_DATE_AND_DURATION:
                     visibleTasks.sortByPoints();
                     break;
+                case TITLE:
+                    visibleTasks.sortByTitle();
                 default:
                     break;
             }
@@ -360,20 +364,32 @@ public class ClientModel {
 
     public void setSortType(SortEnum sortType) {
 
-        switch(sortType)
+        if (sortType == null)
         {
-            case DUE_DATE:
-                updateSettingInDB("Sort", "DueDate");
-                break;
-            case DURATION_LEFT:
-                updateSettingInDB("Sort", "Duration");
-                break;
-            case DUE_DATE_AND_DURATION:
-                updateSettingInDB("Sort", "DueDateAndDuration");
-                break;
-            default:
-                break;
+            updateSettingInDB("Sort", null);
         }
+        else
+        {
+            switch(sortType)
+            {
+                case DUE_DATE:
+                    updateSettingInDB("Sort", "DueDate");
+                    break;
+                case DURATION_LEFT:
+                    updateSettingInDB("Sort", "Duration");
+                    break;
+                case DUE_DATE_AND_DURATION:
+                    updateSettingInDB("Sort", "DueDateAndDuration");
+                    break;
+                case TITLE:
+                    updateSettingInDB("Sort", "Title");
+                    break;
+                default:
+
+                    break;
+            }
+        }
+
         this.sortType = sortType;
     }
 
@@ -546,6 +562,8 @@ public class ClientModel {
                 case "DueDateAndDuration":
                     sortType = SortEnum.DUE_DATE_AND_DURATION;
                     break;
+                case "Title":
+                    sortType = SortEnum.TITLE;
                 default:
                     break;
             }
@@ -611,6 +629,12 @@ public class ClientModel {
         }
 
         return taskList;
+    }
+
+    public int deleteDeletedTasks()
+    {
+        String whereClause = DELETED + " = 1";
+        return taskDatabase.delete(TaskDbSchema.TaskTable.NAME, whereClause, null);
     }
 
     private static ContentValues getContentValues(Task task)

@@ -139,6 +139,9 @@
     <string name="sort_by">Sort By</string>
     <string name="new_plan">New Plan</string>
 
+    <string name="remove_deleted_tasks">Erase Deleted Tasks</string>
+    <string name="title">Title</string>
+
     <string name="segment_info">What\'s a segment?</string>
     <string name="segment_description">A segment is the minimum length of time you can work in one sitting on this task. E.g. it might take 20 hours to clean out the garage, but you can work on it in 30 minute segments.</string>
 </resources>
